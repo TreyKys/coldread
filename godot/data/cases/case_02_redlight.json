@@ -1,0 +1,52 @@
+{
+  "id": "case_02_redlight",
+  "name": "Case 2 · Red Light",
+  "rank": "CONSTABLE",
+  "district": "the_stacks",
+  "mins": "~6 min",
+  "blurb": "The Stacks, night. Every light on Dayo Sanni's street turned green at once. Then he vanished.",
+  "scenes": [
+    { "type": "cold_open", "district": "the_stacks", "lines": [
+      { "who": "The Stacks · night", "text": "A junction where every light flips green at once. Brick cars pile into each other. Drivers climb out shaking fists. Nobody is hurt — this time." },
+      { "who": "Patch", "face": "patch", "text": "\"Traffic control says the command came from inside the system. That is Dayo's login. Whoever took him made him log in first.\"" }
+    ]},
+    { "type": "breach", "district": "the_stacks", "room": "Dayo's tower flat", "time_s": 35, "trace": true,
+      "evidence": ["laptop", "prints", "receipt", "kite2"] },
+    { "type": "read", "title": "Where did they take him, and how?",
+      "sentence": "They took him to ___ by ___.",
+      "answers": ["tower3", "biketaxi"], "extra": ["tower3", "biketaxi", "skyway"] },
+    { "type": "foot_chase", "district": "the_stacks", "canFail": true, "maxHits": 4,
+      "win_title": "Caught on the laundry lines",
+      "win_text": "Needle goes down between two satellite dishes — but Dayo is already in the convoy below." },
+    { "type": "intercept", "district": "the_stacks", "blocks": 1,
+      "brief": "The convoy splits three ways out of the Stacks. Sightline is glowing one route as most likely. Trust it — for now.",
+      "routes": [
+        { "id": "bridge",  "name": "Lift bridge",   "kind": "bridge",  "weight": 1.6 },
+        { "id": "back",    "name": "Back streets",  "kind": "back",    "weight": 0.9 },
+        { "id": "highway", "name": "Skyway ramp",   "kind": "highway", "weight": 0.7 }
+      ] },
+    { "type": "pursuit", "district": "the_stacks", "hp": 3, "maxHits": 4,
+      "win_title": "Lead bike down",
+      "win_text": "The rider is a middle-aged man, shaking. Spool holds his debts and his family's address." },
+    { "type": "choice", "prompt": "The driver was coerced. He has a family and a number he has to call.",
+      "timer_s": 6,
+      "left":  { "label": "Flip him as an informant", "set": { "informant": "flipped", "trust_wren": 2 },
+        "result": "He gives you the Portside dispatcher's name and keeps his job.",
+        "echo": "An informant inside the Kites. It opens Case 3 from the dispatch side." },
+      "right": { "label": "Book him", "set": { "informant": "booked", "trust_patch": 2 },
+        "result": "By the book. Patch approves; the man's family does not.",
+        "echo": "Clean record, closed door. Case 3 starts colder." },
+      "hesitate": { "label": "You hesitated", "set": { "informant": "booked", "trust_dash": -1 },
+        "result": "Processing takes the decision out of your hands at 2am.",
+        "echo": "The squad noticed you froze on a person, not a problem." } },
+    { "type": "debrief", "rank": "RANK 2 · CONSTABLE", "title": "They are not asking for ransom",
+      "text": "The driver, finally: \"No ransom. They are making them BUILD something.\"",
+      "rows": [
+        { "k": "Driver", "flag": "informant", "map": { "flipped": "Flipped — informant", "_else": "Booked" } },
+        { "k": "Victims", "value": "2 missing — engineer, traffic coder", "tone": "bad" },
+        { "k": "Kemi Hart", "flag": "kemi", "map": { "ally": "Ally", "_else": "Rival" } }
+      ],
+      "cliff": "At Portside, a third kite drops on a dispatcher's desk.",
+      "cta": "Continue" }
+  ]
+}

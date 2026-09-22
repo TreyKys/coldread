@@ -1,0 +1,8 @@
+{
+  "act": 1,
+  "cases": [
+    "case_01_snatch.json",
+    "case_02_redlight.json",
+    "case_03_workshop.json"
+  ]
+}

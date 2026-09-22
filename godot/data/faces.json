@@ -1,0 +1,14 @@
+{
+  "rook":   { "skin": "#8D5A3C", "hair": "#1F1614", "hairShape": "flat",   "shirt": "#20364A", "badge": "#FF6A2B", "role": "You" },
+  "ife":    { "skin": "#6B3A22", "hair": "#0E0D0C", "hairShape": "wrap",   "shirt": "#243244", "badge": "#F2C14E", "role": "Commander" },
+  "dash":   { "skin": "#9C6642", "hair": "#2A1F1B", "hairShape": "buzz",   "shirt": "#1F2A32", "badge": "#45D6C6", "role": "Partner" },
+  "patch":  { "skin": "#7A4A2E", "hair": "#2C241F", "hairShape": "puff",   "shirt": "#3D3830", "badge": "#93D651", "role": "Forensics" },
+  "juno":   { "skin": "#5F3320", "hair": "#8B2A1F", "hairShape": "braids", "shirt": "#2A2A38", "badge": "#EF4D63", "role": "Hacker" },
+  "sol":    { "skin": "#4A2A18", "hair": "#141110", "hairShape": "flat",   "shirt": "#33332B", "badge": "#F2C14E", "role": "Breacher" },
+  "wren":   { "skin": "#8A5732", "hair": "#1F1614", "hairShape": "braids", "shirt": "#4A3040", "badge": "#45D6C6", "role": "Negotiator" },
+  "kemi":   { "skin": "#7A4926", "hair": "#B8722A", "hairShape": "puff",   "shirt": "#3A2828", "badge": "#F2C14E", "role": "Journalist" },
+  "spool":  { "skin": "#734424", "hair": "#151312", "hairShape": "buzz",   "shirt": "#2A2422", "badge": "#EF4D63", "role": "Kites crew" },
+  "ada":    { "skin": "#C8967A", "hair": "#F0E6D8", "hairShape": "sleek",  "shirt": "#0E1418", "badge": "#45D6C6", "role": "Sightline" },
+  "driver": { "skin": "#7E4A2A", "hair": "#1A130E", "hairShape": "flat",   "shirt": "#3A2E24", "badge": "#93D651", "role": "Detained" },
+  "needle": { "skin": "#835228", "hair": "#1E1610", "hairShape": "buzz",   "shirt": "#26302A", "badge": "#EF4D63", "role": "Runner" }
+}

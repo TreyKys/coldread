@@ -1,8 +1,17 @@
 # COLD READ
 
 A brick-voxel detective / crime game for mobile. Working title.
-Currently at **playable greybox** stage — Cases 1–3 shipped as a single-file
-HTML5 canvas prototype, no build step, no assets.
+
+> **Now moving to Godot 4.** The HTML5 canvas build was the greybox — it
+> proved the loop. The production game is being built in **Godot 4** (landscape,
+> mobile). Start here:
+> - [`ANTIGRAVITY_PROMPT.md`](./ANTIGRAVITY_PROMPT.md) — paste-ready mission for the Antigravity agent.
+> - [`BUILD_PLAN.md`](./BUILD_PLAN.md) — the full phased build plan and architecture.
+> - [`godot/`](./godot/) — the Godot project (boots today; narrative spine live, gameplay scenes stubbed).
+> - [`greybox/index.html`](./greybox/index.html) — the frozen HTML5 prototype, kept as the feel reference.
+
+The greybox shipped Cases 1–3 as a single-file HTML5 canvas prototype, no
+build step, no assets.
 
 - **Live greybox:** https://claude.ai/artifact/MpmWpoXrt3XiFfESddLUdG
 - **Full design doc & storyboard:** see [`ROADMAP.md`](./ROADMAP.md)

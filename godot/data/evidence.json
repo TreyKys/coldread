@@ -1,0 +1,21 @@
+{
+  "burner":   { "id": "burner",   "name": "Burner phone",           "tag": "digital" },
+  "token":    { "id": "token",    "name": "Bridge toll token",      "tag": "physical" },
+  "kite1":    { "id": "kite1",    "name": "Red paper kite",         "tag": "signature" },
+  "laptop":   { "id": "laptop",   "name": "Traffic-control login",  "tag": "digital" },
+  "prints":   { "id": "prints",   "name": "Wet footprints, upward", "tag": "trace" },
+  "receipt":  { "id": "receipt",  "name": "\"Kites Express\" receipt", "tag": "physical" },
+  "kite2":    { "id": "kite2",    "name": "Red paper kite",         "tag": "signature" },
+  "rust":     { "id": "rust",     "name": "Container rust flakes",  "tag": "trace" },
+  "manifest": { "id": "manifest", "name": "Manifest: Container 9",  "tag": "document" },
+  "kite3":    { "id": "kite3",    "name": "Red paper kite",         "tag": "signature" },
+  "boarding": { "id": "boarding", "name": "Boarding pass (dated tomorrow)", "tag": "planted", "decoy": true },
+  "skyway":   { "id": "skyway",   "name": "Skyway Exit 4",          "tag": "location" },
+  "tower3":   { "id": "tower3",   "name": "Tower 3 rooftop",        "tag": "location" },
+  "biketaxi": { "id": "biketaxi", "name": "By bike taxi",           "tag": "method" },
+  "stack":    { "id": "stack",    "name": "The container stack",    "tag": "location" },
+  "airport":  { "id": "airport",  "name": "The airport",            "tag": "location" },
+  "boards":   { "id": "boards",   "name": "Bridge weak-point diagrams", "tag": "plan" },
+  "drive":    { "id": "drive",    "name": "Self-wiping server drive",   "tag": "digital" },
+  "keys":     { "id": "keys",     "name": "Customs blind-spot list",    "tag": "plan" }
+}

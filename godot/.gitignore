@@ -1,0 +1,6 @@
+# Godot 4 — imported assets and editor-local files
+.godot/
+android/build/
+*.import
+export_presets.cfg
+.DS_Store
