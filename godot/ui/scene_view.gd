@@ -162,16 +162,23 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 		"cold_open": _play_lines(cfg.get("lines", []), 0)
 		"choice": _play_choice(cfg)
 		"debrief": _play_debrief(cfg)
-			"breach":
-			var breach_scene = load("res://scenes/breach/breach.tscn").instantiate()
+		"breach":
+			var breach_scene = preload("res://scenes/breach/breach.tscn").instantiate()
 			get_tree().root.add_child(breach_scene)
 			self.visible = false
 			breach_scene.present(cfg, func(result):
-				breach_scene.queue_free()
 				self.visible = true
 				_finish(result)
 			)
-				"read":
+		"read":
+			var read_scene = preload("res://scenes/read/read.tscn").instantiate()
+			get_tree().root.add_child(read_scene)
+			self.visible = false
+			read_scene.present(cfg, func(result):
+				self.visible = true
+				_finish(result)
+			)
+		"read":
 			var read_scene = load("res://scenes/read/read.tscn").instantiate()
 			get_tree().root.add_child(read_scene)
 			self.visible = false

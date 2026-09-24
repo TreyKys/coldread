@@ -30,6 +30,10 @@ var _camera_shake: float = 0.0
 var _voxel_mesh: BoxMesh
 var _voxel_mat: StandardMaterial3D
 
+# Pre-allocated shared resources for debris performance
+var _debris_mesh: BoxMesh
+var _debris_shape: BoxShape3D
+
 # Input tracking
 var _touch_start: Vector2
 var _is_dragging: bool = false
@@ -38,6 +42,10 @@ var _last_hit_cell := Vector3i(-999, -999, -999)
 
 func _ready() -> void:
 	_setup_mesh_library()
+
+func _exit_tree() -> void:
+	# Failsafe global state reset
+	Engine.time_scale = 1.0
 
 func present(cfg: Dictionary, on_done: Callable) -> void:
 	_cfg = cfg
@@ -71,6 +79,14 @@ func _setup_mesh_library() -> void:
 	library.set_item_shapes(0, [shape, Transform3D.IDENTITY])
 	
 	grid_map.mesh_library = library
+	
+	# Pre-allocate debris resources
+	_debris_mesh = BoxMesh.new()
+	_debris_mesh.size = Vector3(0.5, 0.5, 0.5)
+	_debris_mesh.surface_set_material(0, _voxel_mat)
+	
+	_debris_shape = BoxShape3D.new()
+	_debris_shape.size = Vector3(0.5, 0.5, 0.5)
 
 func _generate_level() -> void:
 	grid_map.clear()
@@ -81,7 +97,6 @@ func _generate_level() -> void:
 		
 	_smashed_count = 0
 	
-	# Create a blocky container shape
 	var sx = 8
 	var sy = 5
 	var sz = 6
@@ -97,11 +112,16 @@ func _generate_level() -> void:
 		_place_evidence(ev_id, sx, sy, sz)
 
 func _place_evidence(id: String, sx: int, sy: int, sz: int) -> void:
-	var px = randi_range(-sx/2 + 1, sx/2 - 2)
-	var py = randi_range(0, sy - 2)
-	var pz = randi_range(-sz/2 + 1, sz/2 - 2)
-	var pos = Vector3i(px, py, pz)
-	
+	var pos = Vector3i.ZERO
+	# Ensure unique coordinates
+	for _i in range(100):
+		var px = randi_range(-sx/2 + 1, sx/2 - 2)
+		var py = randi_range(0, sy - 2)
+		var pz = randi_range(-sz/2 + 1, sz/2 - 2)
+		pos = Vector3i(px, py, pz)
+		if not _evidence_nodes.has(pos):
+			break
+			
 	var ev_node = Node3D.new()
 	var mesh_inst = MeshInstance3D.new()
 	var box = BoxMesh.new()
@@ -110,7 +130,7 @@ func _place_evidence(id: String, sx: int, sy: int, sz: int) -> void:
 	mat.albedo_color = COL_EVI
 	mat.emission_enabled = true
 	mat.emission = COL_EVI
-	mat.emission_energy_multiplier = 0.0 # Hidden initially
+	mat.emission_energy_multiplier = 0.0
 	box.surface_set_material(0, mat)
 	mesh_inst.mesh = box
 	ev_node.add_child(mesh_inst)
@@ -127,6 +147,7 @@ func _place_evidence(id: String, sx: int, sy: int, sz: int) -> void:
 	ev_node.global_position = grid_map.map_to_local(pos)
 	ev_node.set_meta("evidence_id", id)
 	ev_node.set_meta("mat", mat)
+	ev_node.set_meta("grid_pos", pos)
 	
 	_evidence_nodes[pos] = ev_node
 
@@ -183,7 +204,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event is InputEventMouseMotion:
 			mask = event.button_mask & MOUSE_BUTTON_MASK_LEFT
 		else:
-			mask = 1 # ScreenDrag is always pressed
+			mask = 1
 			
 		if mask != 0:
 			_is_dragging = true
@@ -219,20 +240,14 @@ func _smash_block(cell: Vector3i, hit_normal: Vector3) -> void:
 	if AudioDirector.has_method("play_sfx"):
 		AudioDirector.call("play_sfx", "smash")
 	
-	# Spawn physics debris (4 mini blocks)
 	for i in range(4):
 		var rb = RigidBody3D.new()
 		var col = CollisionShape3D.new()
-		var shape = BoxShape3D.new()
-		shape.size = Vector3(0.5, 0.5, 0.5)
-		col.shape = shape
+		col.shape = _debris_shape
 		rb.add_child(col)
 		
 		var mesh = MeshInstance3D.new()
-		var bm = BoxMesh.new()
-		bm.size = Vector3(0.5, 0.5, 0.5)
-		bm.surface_set_material(0, _voxel_mat)
-		mesh.mesh = bm
+		mesh.mesh = _debris_mesh
 		rb.add_child(mesh)
 		
 		debris_container.add_child(rb)
@@ -241,27 +256,32 @@ func _smash_block(cell: Vector3i, hit_normal: Vector3) -> void:
 		rb.apply_central_impulse(impulse)
 		rb.apply_torque_impulse(Vector3(randf(), randf(), randf()) * 4.0)
 		
-		# Auto cleanup
 		var tween = create_tween()
 		tween.tween_interval(2.0 + randf())
 		tween.tween_property(mesh, "scale", Vector3.ZERO, 0.5)
 		tween.tween_callback(rb.queue_free)
 		
-	# Hit stop juice
 	Engine.time_scale = 0.1
 	await get_tree().create_timer(0.02 * Engine.time_scale).timeout
 	Engine.time_scale = 1.0
 	
-	# Reveal evidence if uncovered
 	for pos in _evidence_nodes.keys():
-		if pos.distance_to(cell) < 2.0:
-			var mat = _evidence_nodes[pos].get_meta("mat")
+		var node = _evidence_nodes[pos]
+		if is_instance_valid(node) and pos.distance_to(cell) < 2.0:
+			var mat = node.get_meta("mat")
 			mat.emission_energy_multiplier = 2.0
 
 func _collect(node: Node3D) -> void:
+	if not is_instance_valid(node): return
+	
 	var id = node.get_meta("evidence_id")
 	if not id in _found_evidence:
 		_found_evidence.append(id)
+		
+		var grid_pos = node.get_meta("grid_pos")
+		if _evidence_nodes.has(grid_pos):
+			_evidence_nodes.erase(grid_pos)
+		
 		if AudioDirector.has_method("play_sfx"):
 			AudioDirector.call("play_sfx", "evidence_find")
 		
@@ -293,7 +313,8 @@ func _finish_scene() -> void:
 	if not _active: return
 	_active = false
 	
-	# Mirror recording
+	Engine.time_scale = 1.0
+	
 	var ratio = float(_smashed_count) / float(max(_total_blocks, 1))
 	if Mirror.has_method("record_event"):
 		var style = "smashed_everything" if ratio > 0.3 else "precise"
