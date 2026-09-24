@@ -1,66 +1,215 @@
 {
   "id": "case_03_workshop",
-  "name": "Case 3 · The Workshop",
+  "name": "Case 3 \u00b7 The Workshop",
   "rank": "DETECTIVE",
   "district": "portside",
   "mins": "~9 min",
-  "blurb": "Portside, heavy rain. Three specialists, one hidden workshop inside a container stack. Act 1 finale.",
+  "blurb": "Portside, heavy rain. Three specialists. One hidden workshop. The Act 1 finale.",
   "scenes": [
-    { "type": "cold_open", "district": "portside", "lines": [
-      { "who": "Portside · dawn, rain", "text": "Juno breaks into INTERCEPT's own network live, on the projector, to prove it leaks. The whole squad is watching." },
-      { "who": "Juno", "face": "juno", "text": "\"I installed your Sightline this morning. Fixed three CVEs while I was in there. You're welcome.\"" },
-      { "who": "Commander Ife", "face": "ife", "text": "\"Third victim. Port dispatcher, Tobi Lawal. Gone since the night shift. Same kite left on his desk. Move.\"" }
-    ]},
-    { "type": "breach", "district": "portside", "room": "The dispatch office", "time_s": 40, "trace": true,
-      "evidence": ["rust", "manifest", "kite3"], "decoys": ["boarding"] },
-    { "type": "read", "title": "They planted something. Read past it.",
+    {
+      "type": "cold_open",
+      "district": "portside",
+      "lines": [
+        {
+          "who": "Portside \u00b7 dawn, rain",
+          "text": "Juno hijacks the precinct's main projector live. The whole squad stops to watch. She just proved INTERCEPT's network leaks."
+        },
+        {
+          "who": "Juno",
+          "face": "juno",
+          "text": "\"I installed your Sightline update this morning. Patched three backdoor exploits while I was in there. You're welcome.\""
+        },
+        {
+          "who": "Commander Ife",
+          "face": "ife",
+          "text": "\"Third victim. Port dispatcher, Tobi Lawal. Snatched on the night shift. Same red kite left on his desk. Get moving.\""
+        }
+      ]
+    },
+    {
+      "type": "breach",
+      "district": "portside",
+      "room": "The dispatch office",
+      "time_s": 40,
+      "trace": true,
+      "evidence": [
+        "rust",
+        "manifest",
+        "kite3"
+      ],
+      "decoys": [
+        "boarding"
+      ]
+    },
+    {
+      "type": "read",
+      "title": "They planted a decoy. Read past it.",
       "sentence": "The hostages are at ___ because of ___ and ___.",
-      "answers": ["stack", "rust", "manifest"],
-      "extra": ["stack", "airport"] },
-    { "type": "intercept", "district": "portside", "blocks": 2,
-      "brief": "Juno's drone (EYE) confirms one route. Spool is driving between the yard and the workshop.",
+      "answers": [
+        "stack",
+        "rust",
+        "manifest"
+      ],
+      "extra": [
+        "stack",
+        "airport"
+      ]
+    },
+    {
+      "type": "intercept",
+      "district": "portside",
+      "blocks": 2,
+      "brief": "[EYE DRONE ACTIVE] Juno's drone confirms visual. Target 'Spool' is moving between the shipping yard and the workshop.",
       "routes": [
-        { "id": "bridge",  "name": "Dock bridge",   "kind": "bridge",  "weight": 1.2 },
-        { "id": "back",    "name": "Yard lanes",    "kind": "back",    "weight": 1.4 },
-        { "id": "highway", "name": "Port highway",  "kind": "highway", "weight": 0.8 },
-        { "id": "docks",   "name": "Water taxi",    "kind": "docks",   "weight": 0.6 }
-      ] },
-    { "type": "pursuit", "district": "portside", "hp": 4, "maxHits": 4,
-      "win_title": "Under the crane",
-      "win_text": "A container drops into your lane and you drift beneath it as it lands. Spool bails into the stack on foot." },
-    { "type": "breach", "district": "portside", "room": "The Workshop", "time_s": 45, "trace": true,
-      "evidence": ["boards", "drive", "keys"] },
-    { "type": "choice", "prompt": "Three hostages chained to benches. The server wipe bar is climbing.",
+        {
+          "id": "bridge",
+          "name": "Dock bridge",
+          "kind": "bridge",
+          "weight": 1.2
+        },
+        {
+          "id": "back",
+          "name": "Yard lanes",
+          "kind": "back",
+          "weight": 1.4
+        },
+        {
+          "id": "highway",
+          "name": "Port highway",
+          "kind": "highway",
+          "weight": 0.8
+        },
+        {
+          "id": "docks",
+          "name": "Water taxi",
+          "kind": "docks",
+          "weight": 0.6
+        }
+      ]
+    },
+    {
+      "type": "pursuit",
+      "district": "portside",
+      "hp": 4,
+      "maxHits": 4,
+      "win_title": "Pinned under the crane",
+      "win_text": "A shipping container slams down into your lane. You drift beneath it, sparks flying. Spool bails out on foot into the stacks."
+    },
+    {
+      "type": "breach",
+      "district": "portside",
+      "room": "The Workshop",
+      "time_s": 45,
+      "trace": true,
+      "evidence": [
+        "boards",
+        "drive",
+        "keys"
+      ]
+    },
+    {
+      "type": "choice",
+      "prompt": "Three hostages chained to workbenches. The server wipe progress bar just hit 96%.",
       "timer_s": 6,
-      "left":  { "label": "Save all three hostages", "set": { "keys": "lost", "trust_wren": 3, "public_trust": 1 },
-        "result": "You get all three out. The drive finishes wiping behind you.",
-        "echo": "The Keys are lost. You will have to rebuild the plan from the city itself." },
-      "right": { "label": "Grab the drive", "set": { "keys": "partial", "trust_sol": 3, "public_trust": -1 },
-        "result": "You pull the drive with 4% left to wipe. A crane lifts Funmi's container away as you do.",
-        "echo": "You hold part of the Keys. Funmi is recovered at the start of Case 4." },
-      "hesitate": { "label": "You hesitated", "set": { "keys": "lost", "trust_sol": -1, "trust_wren": -1 },
-        "result": "Sol makes the call for you and goes for the hostages. The drive wipes clean.",
-        "echo": "Both of them noticed who decided." } },
-    { "type": "standoff", "district": "portside", "time_s": 5,
+      "left": {
+        "label": "Save all three hostages",
+        "set": {
+          "keys": "lost",
+          "trust_wren": 3,
+          "public_trust": 1
+        },
+        "result": "Bolt cutters snap the chains. The hostages stumble out just as the server finishes wiping. Dead end.",
+        "echo": "The Keys are lost. You will have to rebuild the plan from the city itself."
+      },
+      "right": {
+        "label": "Grab the drive",
+        "set": {
+          "keys": "partial",
+          "trust_sol": 3,
+          "public_trust": -1
+        },
+        "result": "You yank the drive at 99%. Outside, a crane lifts Funmi's container away. You saved the data, but lost her again.",
+        "echo": "You hold part of the Keys. Funmi is recovered at the start of Case 4."
+      },
+      "hesitate": {
+        "label": "You hesitated",
+        "set": {
+          "keys": "lost",
+          "trust_sol": -1,
+          "trust_wren": -1
+        },
+        "result": "Sol shoulders past you and tackles the hostage locks. The drive finishes wiping. Both of them noticed you froze.",
+        "echo": "Both of them noticed who decided."
+      }
+    },
+    {
+      "type": "standoff",
+      "district": "portside",
+      "time_s": 5,
       "targets": [
-        { "id": "spool",  "label": "Spool" },
-        { "id": "remote", "label": "The remote", "correct": true },
-        { "id": "cable",  "label": "Crane cable" }
+        {
+          "id": "spool",
+          "label": "Spool"
+        },
+        {
+          "id": "remote",
+          "label": "The remote",
+          "correct": true
+        },
+        {
+          "id": "cable",
+          "label": "Crane cable"
+        }
       ],
-      "win_title": "Remote out of his hand",
-      "win_text": "The gantry remote shatters. Spool is cuffed on the walkway, rain running off him.",
+      "win_title": "Disarmed",
+      "win_text": "The gantry remote shatters in his hand. Spool drops to his knees on the catwalk, rain washing the blood away.",
       "lose_title": "He drops the gantry",
-      "lose_text": "A container slams down between you. You still get him — it is just louder, and the port will be talking about it." },
-    { "type": "debrief", "rank": "RANK 3 · DETECTIVE", "title": "Act 1 · The Kites", "mirror": true,
-      "text": "The victims explain what they were forced to build, together called the Keys: every bridge's structural weak points, a backdoor into traffic control, and the port's customs blind spots.",
+      "lose_text": "A 10-ton container slams down between you, shattering the catwalk. You still bag him, but half the port is destroyed."
+    },
+    {
+      "type": "debrief",
+      "rank": "RANK 3 \u00b7 DETECTIVE",
+      "title": "Act 1 \u00b7 The Kites",
+      "mirror": true,
+      "text": "The rescued victims sit in holding, shivering in foil blankets. \"They made us build... The Keys. A backdoor into traffic control. The bridge schematics. The port's blind spots.\"",
       "rows": [
-        { "k": "The Keys", "flag": "keys", "map": { "partial": "Partly recovered", "_else": "Lost to the wipe" } },
-        { "k": "Spool", "value": "In custody", "tone": "good" },
-        { "k": "Client", "value": "Unknown — paid in maps", "tone": "bad" },
-        { "k": "Kemi Hart", "flag": "kemi", "map": { "ally": "Ally", "_else": "Rival" } },
-        { "k": "Driver", "flag": "informant", "map": { "flipped": "Informant", "_else": "Booked" } }
+        {
+          "k": "The Keys",
+          "flag": "keys",
+          "map": {
+            "partial": "Partly recovered",
+            "_else": "Lost to the wipe"
+          }
+        },
+        {
+          "k": "Spool",
+          "value": "In custody",
+          "tone": "good"
+        },
+        {
+          "k": "Client",
+          "value": "Unknown \u2014 paid in maps",
+          "tone": "bad"
+        },
+        {
+          "k": "Kemi Hart",
+          "flag": "kemi",
+          "map": {
+            "ally": "Ally",
+            "_else": "Rival"
+          }
+        },
+        {
+          "k": "Driver",
+          "flag": "informant",
+          "map": {
+            "flipped": "Informant",
+            "_else": "Booked"
+          }
+        }
       ],
-      "cliff": "Spool leans to the glass: \"Never saw the client. We got paid in maps. The Cartographer says hello, Rook.\"",
-      "cta": "End of Act I skeleton — Act II is next" }
+      "cliff": "Spool leans against the interrogation glass. \"I never saw the client. We got paid in maps. The Cartographer says hello, Rook.\"",
+      "cta": "End of Act I skeleton \u2014 Act II is next"
+    }
   ]
 }

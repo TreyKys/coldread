@@ -1,54 +1,172 @@
 {
   "id": "case_01_snatch",
-  "name": "Case 1 · Snatch",
+  "name": "Case 1 \u00b7 Snatch",
   "rank": "ROOKIE",
   "district": "market_mile",
   "mins": "~5 min",
   "blurb": "Market Mile, dusk. A bridge engineer is dragged off a bike taxi into a van.",
   "scenes": [
-    { "type": "intro", "district": "market_mile", "beats": [
-      { "chapter": { "k": "One year ago", "v": "Market Mile · patrol beat" }, "eyebrow": "BEFORE", "narration": "You were a patrol officer walking the fruit lanes. You knew every stall by the fruit they would not sell you." },
-      { "face": "rook", "who": "ROOK (you)", "text": "I grew up two streets over. My mother sold plantain at Stall 14. When the Kites started snatching kids off bike taxis, everybody looked to the police. The police looked away." },
-      { "face": "rook", "who": "ROOK (you)", "text": "My cousin Nkem was thirteen. Her case is still open. Cold, they call it. So I put in for detective. Then INTERCEPT. Then here." },
-      { "chapter": { "k": "Today", "v": "INTERCEPT HQ · induction" }, "eyebrow": "NOW", "text": "Induction day. The unit that catches them before it goes cold." },
-      { "face": "ife", "who": "COMMANDER IFEOMA NWOSU", "text": "Rookie. Callsign Rook. You wanted the unit that catches them before it goes cold. Welcome. Try not to become a cold case yourself before lunchtime." },
-      { "face": "ada", "who": "ADA VOSS · Sightline", "text": "An earpiece for the new detective. Sightline reads the city pulse and whispers where they will run next. Trust it. It has been right nine times out of ten this month." },
-      { "face": "dash", "who": "DASH (partner)", "text": "Rook — radio. Snatch in progress, Market Mile, corner of the fruit lane. Bike taxi, red van, three masked. We are moving." }
-    ]},
-    { "type": "cold_open", "district": "market_mile", "lines": [
-      { "who": "Market Mile · dusk", "text": "The van cuts off a bike taxi at the mouth of the fruit lane. Masked Kites haul Funmi Adeyinka inside. Doors slam. Engine already running." },
-      { "who": "Dash", "face": "dash", "text": "\"Rook — go! I'm on the wheel, you're on the ground. MOVE.\"" }
-    ]},
-    { "type": "foot_chase", "district": "market_mile", "canFail": false, "maxHits": 99,
-      "win_title": "Tackled in the fruit stalls",
-      "win_text": "The goon goes down over a crate of oranges. His delivery cart is still standing, two stalls back." },
-    { "type": "breach", "district": "market_mile", "room": "The abandoned delivery cart", "time_s": 30, "trace": false,
-      "evidence": ["burner", "token", "kite1"] },
-    { "type": "read", "title": "Where is the van going?",
-      "sentence": "The van is heading to ___.",
-      "answers": ["burner"], "extra": ["skyway"] },
-    { "type": "pursuit", "district": "market_mile", "hp": 3, "maxHits": 4, "teach": "nitro",
-      "win_title": "The van spins out",
-      "win_text": "Panels shed bricks across the junction. You wrench the doors open. Empty — Funmi was switched to a bike mid-chase." },
-    { "type": "choice", "prompt": "Kemi Hart is live-streaming you. 12.4k watching.",
-      "timer_s": 6,
-      "left":  { "label": "Give her an exclusive", "set": { "kemi": "ally", "trust_kemi": 2 },
-        "result": "She cuts the live feed and walks with you instead.",
-        "echo": "Kemi is an ally. The city stays calmer, and her tips open doors in Case 2." },
-      "right": { "label": "Seize her phone", "set": { "kemi": "rival", "trust_kemi": 0 },
-        "result": "She films the seizure on a second phone. It is online before you reach the car.",
-        "echo": "Kemi is a rival. She will reach your next crime scene before you do." },
-      "hesitate": { "label": "You hesitated", "set": { "kemi": "rival", "trust_dash": -1 },
-        "result": "Dash steps in and takes the phone himself. Nobody looks good.",
-        "echo": "Hesitation is its own answer, and the squad noticed." } },
-    { "type": "debrief", "rank": "RANK 1 · ROOKIE", "title": "You lost the victim",
-      "text": "Commander Ife: \"First day, and you lost her.\" That night, INTERCEPT launches. Ada Voss hands the unit Sightline — \"It tells you where they are going before they know it themselves.\"",
-      "rows": [
-        { "k": "Kemi Hart", "flag": "kemi", "map": { "ally": "Ally", "_else": "Rival" } },
-        { "k": "Victim", "value": "Funmi Adeyinka — still missing", "tone": "bad" },
-        { "k": "Signature", "value": "Red paper kite", "tone": "cool" }
+    {
+      "type": "intro",
+      "district": "market_mile",
+      "beats": [
+        {
+          "chapter": {
+            "k": "One year ago",
+            "v": "Market Mile \u00b7 patrol beat"
+          },
+          "eyebrow": "BEFORE",
+          "narration": "Neon bleeding into gutter water. The scent of overripe plantain. You used to walk this beat."
+        },
+        {
+          "face": "rook",
+          "who": "ROOK (you)",
+          "text": "I grew up two streets over. When the Kites started snatching kids off bike taxis, everybody looked to the police. The police looked away."
+        },
+        {
+          "face": "rook",
+          "who": "ROOK (you)",
+          "text": "My cousin Nkem was thirteen. Her case is still open. They call it cold. I call it waiting."
+        },
+        {
+          "chapter": {
+            "k": "Today",
+            "v": "INTERCEPT HQ \u00b7 induction"
+          },
+          "eyebrow": "NOW",
+          "text": "Induction day. You put in for INTERCEPT. The unit that catches them before the trail freezes."
+        },
+        {
+          "face": "ife",
+          "who": "COMMANDER IFE",
+          "text": "Rookie. Callsign: Rook. You wanted the fast lane? You're in it. Try not to end up in a body bag before lunch."
+        },
+        {
+          "face": "ada",
+          "who": "ADA VOSS",
+          "text": "Put the earpiece in. This is Sightline. It reads the city's pulse and predicts their escape routes. Trust the math, rookie."
+        },
+        {
+          "face": "dash",
+          "who": "DASH (partner)",
+          "text": "[RADIO STATIC] Rook! Snatch in progress. Market Mile. Red van, three masked. We are Oscar Mike. Move!"
+        }
+      ]
+    },
+    {
+      "type": "cold_open",
+      "district": "market_mile",
+      "lines": [
+        {
+          "who": "Market Mile \u00b7 dusk",
+          "text": "Tires scream over wet pavement. The van cuts off a bike taxi, hauling a woman inside. Doors slam. Engine gunned."
+        },
+        {
+          "who": "Dash",
+          "face": "dash",
+          "text": "\"I've got the wheel, you're on the ground. Hit the alley. FLUSH THEM OUT!\""
+        }
+      ]
+    },
+    {
+      "type": "foot_chase",
+      "district": "market_mile",
+      "canFail": false,
+      "maxHits": 99,
+      "win_title": "Target Down",
+      "win_text": "The runner eats pavement over a crate of oranges. His delivery cart is dumped two stalls back. Time to tear it apart."
+    },
+    {
+      "type": "breach",
+      "district": "market_mile",
+      "room": "Suspect's delivery cart",
+      "time_s": 30,
+      "trace": false,
+      "evidence": [
+        "burner",
+        "token",
+        "kite1"
+      ]
+    },
+    {
+      "type": "read",
+      "title": "Where is the van going?",
+      "sentence": "Sightline confirms: The van is heading to ___.",
+      "answers": [
+        "burner"
       ],
-      "cliff": "The caught Kite leans into the glass: \"You did not lose her. You were shown where to look.\"",
-      "cta": "ACT I continues" }
+      "extra": [
+        "skyway"
+      ]
+    },
+    {
+      "type": "pursuit",
+      "district": "market_mile",
+      "hp": 3,
+      "maxHits": 4,
+      "teach": "nitro",
+      "win_title": "Van Disabled",
+      "win_text": "Chassis groans. You wrench the back doors open. Empty. They switched the hostage to a bike mid-chase. Ghosted."
+    },
+    {
+      "type": "choice",
+      "prompt": "Kemi Hart is shoving a phone in your face. 12.4k viewers live.",
+      "timer_s": 6,
+      "left": {
+        "label": "Give her an exclusive",
+        "set": {
+          "kemi": "ally",
+          "trust_kemi": 2
+        },
+        "result": "She cuts the live feed. \"Off the record? I owe you one, Rook.\"",
+        "echo": "Kemi is an ally. The city stays calmer, and her tips open doors in Case 2."
+      },
+      "right": {
+        "label": "Seize the phone",
+        "set": {
+          "kemi": "rival",
+          "trust_kemi": 0
+        },
+        "result": "She uploads from a backup device before you even reach the cruiser. You just made an enemy.",
+        "echo": "Kemi is a rival. She will reach your next crime scene before you do."
+      },
+      "hesitate": {
+        "label": "You hesitated",
+        "set": {
+          "kemi": "rival",
+          "trust_dash": -1
+        },
+        "result": "Dash body-blocks her and snatches the phone. He shoots you a glare. \"Don't freeze on me.\"",
+        "echo": "Hesitation is its own answer, and the squad noticed."
+      }
+    },
+    {
+      "type": "debrief",
+      "rank": "RANK 1 \u00b7 ROOKIE",
+      "title": "You lost the victim",
+      "text": "Commander Ife: \"First day on the job, and you lost her.\" Ada Voss taps the glass monitor: \"You didn't lose her, Rook. You were just blind. Tomorrow, you learn to use Sightline.\"",
+      "rows": [
+        {
+          "k": "Kemi Hart",
+          "flag": "kemi",
+          "map": {
+            "ally": "Ally",
+            "_else": "Rival"
+          }
+        },
+        {
+          "k": "Victim",
+          "value": "Funmi Adeyinka \u2014 still missing",
+          "tone": "bad"
+        },
+        {
+          "k": "Signature",
+          "value": "Red paper kite",
+          "tone": "cool"
+        }
+      ],
+      "cliff": "In holding, the runner you caught grins through bruised lips. \"You didn't lose her, cop. You were shown exactly where to look.\"",
+      "cta": "ACT I continues"
+    }
   ]
 }
