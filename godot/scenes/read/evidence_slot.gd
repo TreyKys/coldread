@@ -13,20 +13,20 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if _filled_id != "":
-		emit_signal("slot_cleared", get_meta("slot_index"), _filled_id)
+		slot_cleared.emit(get_meta("slot_index"), _filled_id)
 		
 	_filled_id = data["id"]
-	emit_signal("card_dropped", get_meta("slot_index"), _filled_id)
+	card_dropped.emit(get_meta("slot_index"), _filled_id)
 	
 	if data.has("source") and is_instance_valid(data["source"]):
-		data["source"].hide() # Hide instead of free so we can restore it
+		data["source"].hide()
 
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if _filled_id != "":
 			var old_id = _filled_id
 			_filled_id = ""
-			emit_signal("slot_cleared", get_meta("slot_index"), old_id)
+			slot_cleared.emit(get_meta("slot_index"), old_id)
 
 func set_empty_visuals() -> void:
 	$Label.text = "[ DROP EVIDENCE ]"

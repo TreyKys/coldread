@@ -30,7 +30,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not _active: return
 	
 	if event is InputEventScreenTouch or event is InputEventMouseButton:
-		var pressed = event.is_pressed() if event is InputEventScreenTouch else event.pressed
+		var pressed = event.is_pressed()
 		var pos = event.position
 		
 		if pressed:

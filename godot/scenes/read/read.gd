@@ -43,19 +43,14 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 			sentence_container.add_child(l)
 			
 		if i < _blanks:
-			var slot = preload("res://scenes/read/evidence_slot.gd").new()
-			slot.custom_minimum_size = Vector2(250, 80)
+			var slot = preload("res://scenes/read/evidence_slot.tscn").instantiate()
 			slot.set_meta("slot_index", i)
 			
-			var l = Label.new()
-			l.name = "Label"
-			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			slot.add_child(l)
-			slot.set_empty_visuals()
+			slot.card_dropped.connect(_on_card_dropped)
+			slot.slot_cleared.connect(_on_slot_cleared)
 			
-			slot.set_drag_forwarding(Callable(), _can_drop_on_slot, _drop_on_slot.bind(slot))
-			slot.connect("slot_cleared", Callable(self, "_on_slot_cleared"))
 			sentence_container.add_child(slot)
+			slot.set_empty_visuals()
 			_slots.append(slot)
 	
 	var extra_ids = cfg.get("extra", [])
@@ -72,52 +67,26 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 	_active = true
 
 func _spawn_card(id: String) -> void:
-	var c = preload("res://scenes/read/evidence_card.gd").new()
-	c.custom_minimum_size = Vector2(200, 250)
+	var c = preload("res://scenes/read/evidence_card.tscn").instantiate()
 	c.set_meta("evidence_id", id)
 	
-	var cvbox = VBoxContainer.new()
-	c.add_child(cvbox)
-	
-	var name_label = Label.new()
 	var ev_data = _evidence_catalog.get(id, {"name": id, "description": ""})
-	name_label.text = ev_data.get("name", id)
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_color_override("font_color", Color("45D6C6"))
-	cvbox.add_child(name_label)
+	c.get_node("VBox/NameLabel").text = ev_data.get("name", id)
+	c.get_node("VBox/DescLabel").text = ev_data.get("description", "")
 	
-	var desc_label = Label.new()
-	desc_label.text = ev_data.get("description", "")
-	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.custom_minimum_size = Vector2(180, 0)
-	cvbox.add_child(desc_label)
-	
-	c.set_drag_forwarding(c._get_drag_data, Callable(), Callable())
 	card_container.add_child(c)
 
-func _can_drop_on_slot(at_position: Vector2, data: Variant) -> bool:
-	return typeof(data) == TYPE_DICTIONARY and data.has("id")
-
-func _drop_on_slot(at_position: Vector2, data: Variant, slot: Control) -> void:
-	var card_id = data["id"]
+func _on_card_dropped(slot_index: int, card_id: String) -> void:
+	var slot = _slots[slot_index]
 	var name = card_id
 	var ev_data = _evidence_catalog.get(card_id)
 	if ev_data: name = ev_data.get("name", card_id)
-		
-	if slot._filled_id != "":
-		_on_slot_cleared(slot.get_meta("slot_index"), slot._filled_id)
-		
-	slot._filled_id = card_id
+	
 	slot.set_filled_visuals(name)
-	
-	if data.has("source") and is_instance_valid(data["source"]):
-		data["source"].hide()
-	
 	_check_completion()
 
 func _on_slot_cleared(slot_index: int, card_id: String) -> void:
 	var slot = _slots[slot_index]
-	slot._filled_id = ""
 	slot.set_empty_visuals()
 	
 	for c in card_container.get_children():

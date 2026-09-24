@@ -39,6 +39,7 @@ const MAX_DEBRIS = 30
 var _touch_start: Vector2
 var _is_dragging: bool = false
 var _last_hit_cell := Vector3i(-999, -999, -999)
+var _click_queue: Array[Vector2] = []
 
 # Cell health mapping
 var _cell_health: Dictionary = {}
@@ -122,7 +123,7 @@ func _generate_level() -> void:
 	for decoy_dict in _target_decoys:
 		_place_item(decoy_dict, true, sx, sy, sz)
 		
-	# Empty red herrings - just random empty spaces inside the volume
+	# Empty red herrings
 	for i in range(5):
 		var pos = _get_random_pos(sx, sy, sz)
 		if grid_map.get_cell_item(pos) != GridMap.INVALID_CELL_ITEM:
@@ -198,14 +199,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not _active: return
 	
 	if event is InputEventScreenTouch or event is InputEventMouseButton:
-		var pressed = event.is_pressed() if event is InputEventScreenTouch else event.pressed
+		var pressed = event.is_pressed()
 		var pos = event.position
 		
 		if pressed:
 			_touch_start = pos
 			_is_dragging = false
 			_last_hit_cell = Vector3i(-999, -999, -999)
-			_process_hit(pos)
+			_click_queue.append(pos)
 		else:
 			if _is_dragging:
 				var swipe_vec = pos - _touch_start
@@ -221,45 +222,45 @@ func _unhandled_input(event: InputEvent) -> void:
 			_is_dragging = true
 			if event.position.distance_to(_touch_start) > 20:
 				var swipe_vec = event.position - _touch_start
-				# Do not smash if it's a clear swipe up
 				if swipe_vec.y < -50 and abs(swipe_vec.x) < 50:
 					pass
 				else:
-					_process_hit(event.position)
+					_click_queue.append(event.position)
 
-func _process_hit(screen_pos: Vector2) -> void:
-	var from = camera.project_ray_origin(screen_pos)
-	var dir = camera.project_ray_normal(screen_pos)
-	var to = from + dir * 100.0
-	
-	var space_state = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(from, to)
-	query.collide_with_areas = true
-	var result = space_state.intersect_ray(query)
-	
-	if result:
-		var col = result.collider
-		if col is GridMap:
-			var local_hit = grid_map.to_local(result.position - result.normal * 0.1)
-			var cell_pos = grid_map.local_to_map(local_hit)
-			if cell_pos != _last_hit_cell and grid_map.get_cell_item(cell_pos) != GridMap.INVALID_CELL_ITEM:
-				_last_hit_cell = cell_pos
-				_hit_block(cell_pos, result.normal)
-		elif col.get_parent() != null and col.get_parent().has_meta("item"):
-			_collect(col.get_parent())
+func _physics_process(delta: float) -> void:
+	if _click_queue.size() > 0:
+		var space_state = get_world_3d().direct_space_state
+		for screen_pos in _click_queue:
+			var from = camera.project_ray_origin(screen_pos)
+			var dir = camera.project_ray_normal(screen_pos)
+			var to = from + dir * 100.0
+			
+			var query = PhysicsRayQueryParameters3D.create(from, to)
+			query.collide_with_areas = true
+			var result = space_state.intersect_ray(query)
+			
+			if result:
+				var col = result.collider
+				if col is GridMap:
+					var local_hit = grid_map.to_local(result.position - result.normal * 0.1)
+					var cell_pos = grid_map.local_to_map(local_hit)
+					if cell_pos != _last_hit_cell and grid_map.get_cell_item(cell_pos) != GridMap.INVALID_CELL_ITEM:
+						_last_hit_cell = cell_pos
+						_hit_block(cell_pos, result.normal)
+				elif col.get_parent() != null and col.get_parent().has_meta("item"):
+					_collect(col.get_parent())
+		_click_queue.clear()
 
 func _hit_block(cell: Vector3i, hit_normal: Vector3) -> void:
 	if not _cell_health.has(cell): return
 	_cell_health[cell] -= 1
 	
 	if _cell_health[cell] > 0:
-		# Just cracked
 		_camera_shake = 0.5
 		if AudioDirector.has_method("play_sfx"):
 			AudioDirector.call("play_sfx", "crack")
 		return
 		
-	# Shatter
 	grid_map.set_cell_item(cell, GridMap.INVALID_CELL_ITEM)
 	_smashed_count += 1
 	_camera_shake = 1.0
@@ -277,6 +278,9 @@ func _hit_block(cell: Vector3i, hit_normal: Vector3) -> void:
 		if is_instance_valid(node) and pos.distance_to(cell) < 2.0:
 			var mat = node.get_meta("mat")
 			mat.emission_energy_multiplier = 2.0
+			var t = node.create_tween()
+			t.tween_interval(1.5)
+			t.tween_property(mat, "emission_energy_multiplier", 0.0, 1.0)
 
 func _spawn_debris(cell: Vector3i, hit_normal: Vector3) -> void:
 	for i in range(2):
@@ -293,27 +297,27 @@ func _spawn_debris(cell: Vector3i, hit_normal: Vector3) -> void:
 			debris_container.add_child(rb)
 			_debris_pool.append(rb)
 		else:
-			# Reuse oldest
 			rb = _debris_pool.pop_front()
 			_debris_pool.append(rb)
 			mesh = rb.get_child(1)
-			# Reset scale if it was fading
 			mesh.scale = Vector3.ONE
-			# Cancel existing tweens
-			var tweens = get_tree().get_processed_tweens()
-			for t in tweens:
-				if t.get_meta("target") == mesh:
-					t.kill()
+			if mesh.has_meta("fade_tween"):
+				var old_tween = mesh.get_meta("fade_tween")
+				if is_instance_valid(old_tween):
+					old_tween.kill()
 		
+		rb.freeze = true
 		rb.global_position = grid_map.map_to_local(cell) + Vector3(randf_range(-0.2, 0.2), randf_range(-0.2, 0.2), randf_range(-0.2, 0.2))
+		rb.freeze = false
+		
 		rb.linear_velocity = Vector3.ZERO
 		rb.angular_velocity = Vector3.ZERO
 		var impulse = (hit_normal * -1 + Vector3.UP * 0.5 + Vector3(randf_range(-0.5,0.5), 0, randf_range(-0.5,0.5))).normalized() * randf_range(8.0, 12.0)
 		rb.apply_central_impulse(impulse)
 		rb.apply_torque_impulse(Vector3(randf(), randf(), randf()) * 4.0)
 		
-		var tween = create_tween()
-		tween.set_meta("target", mesh)
+		var tween = mesh.create_tween()
+		mesh.set_meta("fade_tween", tween)
 		tween.tween_interval(2.0 + randf())
 		tween.tween_property(mesh, "scale", Vector3.ZERO, 0.5)
 
@@ -326,7 +330,7 @@ func _collect(node: Node3D) -> void:
 	if is_decoy:
 		if AudioDirector.has_method("play_sfx"):
 			AudioDirector.call("play_sfx", "failure")
-		_time_left -= 5.0 # Penalty
+		_time_left -= 5.0
 	else:
 		if not item_dict in _found_evidence:
 			_found_evidence.append(item_dict)
@@ -337,7 +341,7 @@ func _collect(node: Node3D) -> void:
 	if _evidence_nodes.has(grid_pos):
 		_evidence_nodes.erase(grid_pos)
 	
-	var tween = create_tween()
+	var tween = node.create_tween()
 	tween.tween_property(node, "scale", Vector3(1.5, 1.5, 1.5), 0.1)
 	tween.tween_property(node, "scale", Vector3.ZERO, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	tween.tween_callback(node.queue_free)
@@ -352,7 +356,7 @@ func _trigger_trace() -> void:
 	_trace_charges -= 1
 	_trace_active = true
 	
-	var tween = create_tween()
+	var tween = trace_overlay.create_tween()
 	tween.tween_property(trace_overlay, "color:a", 0.3, 0.2)
 	tween.tween_property(trace_overlay, "color:a", 0.0, 0.5)
 	
@@ -361,7 +365,7 @@ func _trigger_trace() -> void:
 		if is_instance_valid(node):
 			var mat = node.get_meta("mat")
 			mat.emission_energy_multiplier = 4.0
-			var t2 = create_tween()
+			var t2 = node.create_tween()
 			t2.tween_interval(2.0)
 			t2.tween_property(mat, "emission_energy_multiplier", 0.0, 1.0)
 			
