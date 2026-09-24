@@ -155,7 +155,7 @@ func _spawn_prop(pos: Vector3, type: int, content: Dictionary) -> void:
 		col_shape.size = Vector3(1.5, 1.5, 1.5)
 		pos.y = 0.5
 	elif type == TYPE_MEDIUM:
-		hp = 3
+		hp = 1
 		var b = BoxMesh.new()
 		b.size = Vector3(1.5, 1.2, 1.0)
 		mesh_inst.mesh = b
@@ -163,7 +163,7 @@ func _spawn_prop(pos: Vector3, type: int, content: Dictionary) -> void:
 		col_shape.size = Vector3(2.0, 1.8, 1.5)
 		pos.y = 0.6
 	elif type == TYPE_HEAVY:
-		hp = 6
+		hp = 1
 		var b = BoxMesh.new()
 		b.size = Vector3(1.2, 2.0, 1.2)
 		mesh_inst.mesh = b
@@ -378,7 +378,7 @@ func _collect_item(area: Area3D) -> void:
 	var data = content["data"]
 	
 	if is_decoy:
-		_time_left -= 5.0
+		_time_left -= 2.0
 		_camera_shake = 0.5
 		vignette.color = Color(1, 0, 0, 0.5)
 	else:
