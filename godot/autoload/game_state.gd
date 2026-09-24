@@ -20,7 +20,7 @@ var evidence := []                         # evidence dicts bagged in the curren
 var revive_used := 0
 
 # run-scoped values folded between scenes (not persisted long-term)
-var run := {"grade": "solid", "cut": false, "star_sum": 0, "star_n": 0}
+var run := {"grade": "solid", "cut": false, "star_sum": 0, "star_n": 0, "last_stars": 3}
 
 func set_flag(key: String, value) -> void:
 	flags[key] = value
@@ -29,6 +29,7 @@ func adjust_trust(who: String, delta: int) -> void:
 	trust[who] = clampi(int(trust.get(who, 0)) + delta, 0, 3)
 
 func record_stars(n: int) -> void:
+	run["last_stars"] = n
 	run["star_sum"] += n
 	run["star_n"] += 1
 	stars[str(case_idx)] = maxi(1, roundi(float(run["star_sum"]) / maxf(1.0, float(run["star_n"]))))
@@ -37,7 +38,7 @@ func begin_case(idx: int) -> void:
 	case_idx = idx
 	scene_idx = 0
 	evidence = []
-	run = {"grade": "solid", "cut": false, "star_sum": 0, "star_n": 0}
+	run = {"grade": "solid", "cut": false, "star_sum": 0, "star_n": 0, "last_stars": 3}
 
 func to_dict() -> Dictionary:
 	return {
@@ -89,6 +90,6 @@ func reset_progress() -> void:
 	stars = {}
 	evidence = []
 	revive_used = 0
-	run = {"grade": "solid", "cut": false, "star_sum": 0, "star_n": 0}
+	run = {"grade": "solid", "cut": false, "star_sum": 0, "star_n": 0, "last_stars": 3}
 	Mirror.reset()
 	save()

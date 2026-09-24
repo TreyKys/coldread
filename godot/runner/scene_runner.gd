@@ -45,6 +45,7 @@ func _next_scene() -> void:
 	cfg["_rank"] = c.get("rank", "")
 	cfg["_grade"] = GameState.run["grade"]     # how the last Read graded → chase start distance
 	cfg["_cut"] = GameState.run["cut"]         # did the Intercept cut them off
+	cfg["_last_stars"] = GameState.run.get("last_stars", 3)
 	GameState.save()
 
 	presenter.present(cfg, Callable(self, "_on_scene_done"))
