@@ -7,6 +7,7 @@ A brick-voxel detective / crime game for mobile. Working title.
 > mobile). Start here:
 > - [`ANTIGRAVITY_PROMPT.md`](./ANTIGRAVITY_PROMPT.md) — paste-ready mission for the Antigravity agent.
 > - [`BUILD_PLAN.md`](./BUILD_PLAN.md) — the full phased build plan and architecture.
+> - [`STITCH_PROMPT.md`](./STITCH_PROMPT.md) — Google Stitch prompt pack for the full game UI (design system + every screen).
 > - [`godot/`](./godot/) — the Godot project (boots today; narrative spine live, gameplay scenes stubbed).
 > - [`greybox/index.html`](./greybox/index.html) — the frozen HTML5 prototype, kept as the feel reference.
 
