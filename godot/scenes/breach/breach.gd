@@ -1,8 +1,5 @@
 extends Node3D
 
-## 3D Breach Scene — Destructible voxel environment for evidence searching.
-## Built for Godot 4.x / Mobile.
-
 @onready var camera = $Camera3D
 @onready var grid_map = $GridMap
 @onready var debris_container = $DebrisContainer
@@ -12,49 +9,53 @@ extends Node3D
 @onready var trace_overlay = $UI/TraceOverlay
 
 const COL_EVI = Color("45D6C6")
-const COL_BRICK = Color("8c3b2d")
 const COL_CONTAINER = Color("2d4c5c")
+const COL_HEAVY = Color("1a2c35")
+const COL_DECOY = Color("8c3b2d")
 
 var _cfg: Dictionary
 var _on_done: Callable
-var _time_left: float = 45.0
+var _time_left: float = 60.0
 var _active: bool = false
 var _found_evidence: Array = []
 var _target_evidence: Array = []
+var _target_decoys: Array = []
 var _evidence_nodes: Dictionary = {}
 
 var _smashed_count: int = 0
 var _total_blocks: int = 0
 var _camera_shake: float = 0.0
 
-var _voxel_mesh: BoxMesh
-var _voxel_mat: StandardMaterial3D
+var _trace_charges: int = 1
+var _trace_active: bool = false
 
-# Pre-allocated shared resources for debris performance
+var _voxel_mat: StandardMaterial3D
+var _heavy_mat: StandardMaterial3D
 var _debris_mesh: BoxMesh
 var _debris_shape: BoxShape3D
+var _debris_pool: Array[RigidBody3D] = []
+const MAX_DEBRIS = 30
 
-# Input tracking
 var _touch_start: Vector2
 var _is_dragging: bool = false
-var _drag_timer: float = 0.0
 var _last_hit_cell := Vector3i(-999, -999, -999)
+
+# Cell health mapping
+var _cell_health: Dictionary = {}
 
 func _ready() -> void:
 	_setup_mesh_library()
 
 func _exit_tree() -> void:
-	# Failsafe global state reset
 	Engine.time_scale = 1.0
 
 func present(cfg: Dictionary, on_done: Callable) -> void:
 	_cfg = cfg
 	_on_done = on_done
-	_time_left = float(cfg.get("time_limit", 60.0))
+	_time_left = float(cfg.get("time_s", 60.0))
 	
-	var ev_ids = cfg.get("evidence", [])
-	if ev_ids is Array:
-		_target_evidence = ev_ids
+	_target_evidence = cfg.get("evidence", [])
+	_target_decoys = cfg.get("decoys", [])
 		
 	_generate_level()
 	_update_ui()
@@ -62,39 +63,43 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 
 func _setup_mesh_library() -> void:
 	var library = MeshLibrary.new()
-	_voxel_mesh = BoxMesh.new()
-	_voxel_mesh.size = Vector3(1, 1, 1)
 	
 	_voxel_mat = StandardMaterial3D.new()
 	_voxel_mat.albedo_color = COL_CONTAINER
-	_voxel_mat.roughness = 0.8
-	_voxel_mat.metallic = 0.2
-	_voxel_mesh.surface_set_material(0, _voxel_mat)
 	
+	_heavy_mat = StandardMaterial3D.new()
+	_heavy_mat.albedo_color = COL_HEAVY
+	
+	var box = BoxMesh.new()
+	box.size = Vector3(1, 1, 1)
+	
+	# Light container (0)
+	var light_mesh = box.duplicate()
+	light_mesh.surface_set_material(0, _voxel_mat)
 	library.create_item(0)
-	library.set_item_mesh(0, _voxel_mesh)
+	library.set_item_mesh(0, light_mesh)
+	
+	# Heavy container (1)
+	var heavy_mesh = box.duplicate()
+	heavy_mesh.surface_set_material(0, _heavy_mat)
+	library.create_item(1)
+	library.set_item_mesh(1, heavy_mesh)
 	
 	var shape = BoxShape3D.new()
 	shape.size = Vector3(1, 1, 1)
 	library.set_item_shapes(0, [shape, Transform3D.IDENTITY])
+	library.set_item_shapes(1, [shape, Transform3D.IDENTITY])
 	
 	grid_map.mesh_library = library
 	
-	# Pre-allocate debris resources
 	_debris_mesh = BoxMesh.new()
 	_debris_mesh.size = Vector3(0.5, 0.5, 0.5)
 	_debris_mesh.surface_set_material(0, _voxel_mat)
-	
 	_debris_shape = BoxShape3D.new()
 	_debris_shape.size = Vector3(0.5, 0.5, 0.5)
 
 func _generate_level() -> void:
 	grid_map.clear()
-	for child in debris_container.get_children():
-		child.queue_free()
-	for child in evidence_container.get_children():
-		child.queue_free()
-		
 	_smashed_count = 0
 	
 	var sx = 8
@@ -105,31 +110,43 @@ func _generate_level() -> void:
 	for x in range(-sx/2, sx/2):
 		for y in range(sy):
 			for z in range(-sz/2, sz/2):
-				grid_map.set_cell_item(Vector3i(x, y, z), 0)
+				var is_heavy = randf() > 0.8
+				var type = 1 if is_heavy else 0
+				var pos = Vector3i(x, y, z)
+				grid_map.set_cell_item(pos, type)
+				_cell_health[pos] = 2 if is_heavy else 1
 				_total_blocks += 1
 				
-	for ev_id in _target_evidence:
-		_place_evidence(ev_id, sx, sy, sz)
+	for ev_dict in _target_evidence:
+		_place_item(ev_dict, false, sx, sy, sz)
+	for decoy_dict in _target_decoys:
+		_place_item(decoy_dict, true, sx, sy, sz)
+		
+	# Empty red herrings - just random empty spaces inside the volume
+	for i in range(5):
+		var pos = _get_random_pos(sx, sy, sz)
+		if grid_map.get_cell_item(pos) != GridMap.INVALID_CELL_ITEM:
+			grid_map.set_cell_item(pos, GridMap.INVALID_CELL_ITEM)
+			_cell_health.erase(pos)
+			_total_blocks -= 1
 
-func _place_evidence(id: String, sx: int, sy: int, sz: int) -> void:
-	var pos = Vector3i.ZERO
-	# Ensure unique coordinates
+func _get_random_pos(sx: int, sy: int, sz: int) -> Vector3i:
 	for _i in range(100):
-		var px = randi_range(-sx/2 + 1, sx/2 - 2)
-		var py = randi_range(0, sy - 2)
-		var pz = randi_range(-sz/2 + 1, sz/2 - 2)
-		pos = Vector3i(px, py, pz)
+		var pos = Vector3i(randi_range(-sx/2 + 1, sx/2 - 2), randi_range(0, sy - 2), randi_range(-sz/2 + 1, sz/2 - 2))
 		if not _evidence_nodes.has(pos):
-			break
-			
+			return pos
+	return Vector3i.ZERO
+
+func _place_item(item_dict: Dictionary, is_decoy: bool, sx: int, sy: int, sz: int) -> void:
+	var pos = _get_random_pos(sx, sy, sz)
 	var ev_node = Node3D.new()
 	var mesh_inst = MeshInstance3D.new()
 	var box = BoxMesh.new()
 	box.size = Vector3(0.6, 0.6, 0.6)
 	var mat = StandardMaterial3D.new()
-	mat.albedo_color = COL_EVI
+	mat.albedo_color = COL_DECOY if is_decoy else COL_EVI
 	mat.emission_enabled = true
-	mat.emission = COL_EVI
+	mat.emission = COL_DECOY if is_decoy else COL_EVI
 	mat.emission_energy_multiplier = 0.0
 	box.surface_set_material(0, mat)
 	mesh_inst.mesh = box
@@ -145,7 +162,8 @@ func _place_evidence(id: String, sx: int, sy: int, sz: int) -> void:
 	
 	evidence_container.add_child(ev_node)
 	ev_node.global_position = grid_map.map_to_local(pos)
-	ev_node.set_meta("evidence_id", id)
+	ev_node.set_meta("item", item_dict)
+	ev_node.set_meta("is_decoy", is_decoy)
 	ev_node.set_meta("mat", mat)
 	ev_node.set_meta("grid_pos", pos)
 	
@@ -160,14 +178,11 @@ func _process(delta: float) -> void:
 		camera.h_offset = 0
 		camera.v_offset = 0
 
-	if not _active:
-		return
-		
+	if not _active: return
 	_time_left -= delta
 	if _time_left <= 0:
 		_time_left = 0
 		_finish_scene()
-		
 	_update_ui()
 
 func _update_ui() -> void:
@@ -189,7 +204,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		if pressed:
 			_touch_start = pos
 			_is_dragging = false
-			_drag_timer = 0.0
 			_last_hit_cell = Vector3i(-999, -999, -999)
 			_process_hit(pos)
 		else:
@@ -203,13 +217,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		var mask = 1
 		if event is InputEventMouseMotion:
 			mask = event.button_mask & MOUSE_BUTTON_MASK_LEFT
-		else:
-			mask = 1
-			
 		if mask != 0:
 			_is_dragging = true
 			if event.position.distance_to(_touch_start) > 20:
-				_process_hit(event.position)
+				var swipe_vec = event.position - _touch_start
+				# Do not smash if it's a clear swipe up
+				if swipe_vec.y < -50 and abs(swipe_vec.x) < 50:
+					pass
+				else:
+					_process_hit(event.position)
 
 func _process_hit(screen_pos: Vector2) -> void:
 	var from = camera.project_ray_origin(screen_pos)
@@ -228,39 +244,30 @@ func _process_hit(screen_pos: Vector2) -> void:
 			var cell_pos = grid_map.local_to_map(local_hit)
 			if cell_pos != _last_hit_cell and grid_map.get_cell_item(cell_pos) != GridMap.INVALID_CELL_ITEM:
 				_last_hit_cell = cell_pos
-				_smash_block(cell_pos, result.normal)
-		elif col.get_parent() != null and col.get_parent().has_meta("evidence_id"):
+				_hit_block(cell_pos, result.normal)
+		elif col.get_parent() != null and col.get_parent().has_meta("item"):
 			_collect(col.get_parent())
 
-func _smash_block(cell: Vector3i, hit_normal: Vector3) -> void:
+func _hit_block(cell: Vector3i, hit_normal: Vector3) -> void:
+	if not _cell_health.has(cell): return
+	_cell_health[cell] -= 1
+	
+	if _cell_health[cell] > 0:
+		# Just cracked
+		_camera_shake = 0.5
+		if AudioDirector.has_method("play_sfx"):
+			AudioDirector.call("play_sfx", "crack")
+		return
+		
+	# Shatter
 	grid_map.set_cell_item(cell, GridMap.INVALID_CELL_ITEM)
 	_smashed_count += 1
 	_camera_shake = 1.0
-	
 	if AudioDirector.has_method("play_sfx"):
 		AudioDirector.call("play_sfx", "smash")
 	
-	for i in range(4):
-		var rb = RigidBody3D.new()
-		var col = CollisionShape3D.new()
-		col.shape = _debris_shape
-		rb.add_child(col)
-		
-		var mesh = MeshInstance3D.new()
-		mesh.mesh = _debris_mesh
-		rb.add_child(mesh)
-		
-		debris_container.add_child(rb)
-		rb.global_position = grid_map.map_to_local(cell) + Vector3(randf_range(-0.2, 0.2), randf_range(-0.2, 0.2), randf_range(-0.2, 0.2))
-		var impulse = (hit_normal * -1 + Vector3.UP * 0.5 + Vector3(randf_range(-0.5,0.5), 0, randf_range(-0.5,0.5))).normalized() * randf_range(8.0, 12.0)
-		rb.apply_central_impulse(impulse)
-		rb.apply_torque_impulse(Vector3(randf(), randf(), randf()) * 4.0)
-		
-		var tween = create_tween()
-		tween.tween_interval(2.0 + randf())
-		tween.tween_property(mesh, "scale", Vector3.ZERO, 0.5)
-		tween.tween_callback(rb.queue_free)
-		
+	_spawn_debris(cell, hit_normal)
+	
 	Engine.time_scale = 0.1
 	await get_tree().create_timer(0.02 * Engine.time_scale).timeout
 	Engine.time_scale = 1.0
@@ -271,31 +278,80 @@ func _smash_block(cell: Vector3i, hit_normal: Vector3) -> void:
 			var mat = node.get_meta("mat")
 			mat.emission_energy_multiplier = 2.0
 
+func _spawn_debris(cell: Vector3i, hit_normal: Vector3) -> void:
+	for i in range(2):
+		var rb: RigidBody3D
+		var mesh: MeshInstance3D
+		if _debris_pool.size() < MAX_DEBRIS:
+			rb = RigidBody3D.new()
+			var col = CollisionShape3D.new()
+			col.shape = _debris_shape
+			rb.add_child(col)
+			mesh = MeshInstance3D.new()
+			mesh.mesh = _debris_mesh
+			rb.add_child(mesh)
+			debris_container.add_child(rb)
+			_debris_pool.append(rb)
+		else:
+			# Reuse oldest
+			rb = _debris_pool.pop_front()
+			_debris_pool.append(rb)
+			mesh = rb.get_child(1)
+			# Reset scale if it was fading
+			mesh.scale = Vector3.ONE
+			# Cancel existing tweens
+			var tweens = get_tree().get_processed_tweens()
+			for t in tweens:
+				if t.get_meta("target") == mesh:
+					t.kill()
+		
+		rb.global_position = grid_map.map_to_local(cell) + Vector3(randf_range(-0.2, 0.2), randf_range(-0.2, 0.2), randf_range(-0.2, 0.2))
+		rb.linear_velocity = Vector3.ZERO
+		rb.angular_velocity = Vector3.ZERO
+		var impulse = (hit_normal * -1 + Vector3.UP * 0.5 + Vector3(randf_range(-0.5,0.5), 0, randf_range(-0.5,0.5))).normalized() * randf_range(8.0, 12.0)
+		rb.apply_central_impulse(impulse)
+		rb.apply_torque_impulse(Vector3(randf(), randf(), randf()) * 4.0)
+		
+		var tween = create_tween()
+		tween.set_meta("target", mesh)
+		tween.tween_interval(2.0 + randf())
+		tween.tween_property(mesh, "scale", Vector3.ZERO, 0.5)
+
 func _collect(node: Node3D) -> void:
 	if not is_instance_valid(node): return
 	
-	var id = node.get_meta("evidence_id")
-	if not id in _found_evidence:
-		_found_evidence.append(id)
-		
-		var grid_pos = node.get_meta("grid_pos")
-		if _evidence_nodes.has(grid_pos):
-			_evidence_nodes.erase(grid_pos)
-		
+	var is_decoy = node.get_meta("is_decoy")
+	var item_dict = node.get_meta("item")
+	
+	if is_decoy:
 		if AudioDirector.has_method("play_sfx"):
-			AudioDirector.call("play_sfx", "evidence_find")
-		
-		var tween = create_tween()
-		tween.tween_property(node, "scale", Vector3(1.5, 1.5, 1.5), 0.1)
-		tween.tween_property(node, "scale", Vector3.ZERO, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-		tween.tween_callback(node.queue_free)
-		_update_ui()
-		
-		if _found_evidence.size() >= _target_evidence.size():
-			await get_tree().create_timer(0.5).timeout
-			_finish_scene()
+			AudioDirector.call("play_sfx", "failure")
+		_time_left -= 5.0 # Penalty
+	else:
+		if not item_dict in _found_evidence:
+			_found_evidence.append(item_dict)
+			if AudioDirector.has_method("play_sfx"):
+				AudioDirector.call("play_sfx", "evidence_find")
+				
+	var grid_pos = node.get_meta("grid_pos")
+	if _evidence_nodes.has(grid_pos):
+		_evidence_nodes.erase(grid_pos)
+	
+	var tween = create_tween()
+	tween.tween_property(node, "scale", Vector3(1.5, 1.5, 1.5), 0.1)
+	tween.tween_property(node, "scale", Vector3.ZERO, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	tween.tween_callback(node.queue_free)
+	_update_ui()
+	
+	if not is_decoy and _found_evidence.size() >= _target_evidence.size():
+		await get_tree().create_timer(0.5).timeout
+		_finish_scene()
 
 func _trigger_trace() -> void:
+	if _trace_charges <= 0 or _trace_active: return
+	_trace_charges -= 1
+	_trace_active = true
+	
 	var tween = create_tween()
 	tween.tween_property(trace_overlay, "color:a", 0.3, 0.2)
 	tween.tween_property(trace_overlay, "color:a", 0.0, 0.5)
@@ -306,19 +362,19 @@ func _trigger_trace() -> void:
 			var mat = node.get_meta("mat")
 			mat.emission_energy_multiplier = 4.0
 			var t2 = create_tween()
-			t2.tween_interval(1.5)
+			t2.tween_interval(2.0)
 			t2.tween_property(mat, "emission_energy_multiplier", 0.0, 1.0)
+			
+	await get_tree().create_timer(3.0).timeout
+	_trace_active = false
 
 func _finish_scene() -> void:
 	if not _active: return
 	_active = false
-	
 	Engine.time_scale = 1.0
 	
-	var ratio = float(_smashed_count) / float(max(_total_blocks, 1))
-	if Mirror.has_method("record_event"):
-		var style = "smashed_everything" if ratio > 0.3 else "precise"
-		Mirror.call("record_event", "breach_method", {"style": style, "ratio": ratio})
+	var smashed_everything = float(_smashed_count) / float(max(_total_blocks, 1)) > 0.4
+	Mirror.record_search(smashed_everything)
 	
 	if _on_done.is_valid():
 		_on_done.call({"evidence": _found_evidence})

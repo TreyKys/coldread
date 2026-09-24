@@ -178,18 +178,16 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 				self.visible = true
 				_finish(result)
 			)
-		"read":
-			var read_scene = load("res://scenes/read/read.tscn").instantiate()
-			get_tree().root.add_child(read_scene)
+		"intercept": _placeholder(cfg, "Predict the route, drag roadblocks onto the map. From Case 8 the weights lean away from your Mirror habits.", {"cut": true})
+		"pursuit": _placeholder(cfg, "Lane driving. Swipe to switch lanes / drift, tap to ram, hold for the squad ability. Optional tilt-to-steer (pitch to Alex first).", {"stars": 2})
+		"foot_chase":
+			var fc_scene = preload("res://scenes/foot_chase/foot_chase.tscn").instantiate()
+			get_tree().root.add_child(fc_scene)
 			self.visible = false
-			read_scene.present(cfg, func(result):
-				read_scene.queue_free()
+			fc_scene.present(cfg, func(result):
 				self.visible = true
 				_finish(result)
 			)
-		"intercept": _placeholder(cfg, "Predict the route, drag roadblocks onto the map. From Case 8 the weights lean away from your Mirror habits.", {"cut": true})
-		"pursuit": _placeholder(cfg, "Lane driving. Swipe to switch lanes / drift, tap to ram, hold for the squad ability. Optional tilt-to-steer (pitch to Alex first).", {"stars": 2})
-		"foot_chase": _placeholder(cfg, "Behind-the-shoulder runner. Swipe left/right to weave, up to vault, down to slide.", {"stars": 2})
 		"standoff": _placeholder(cfg, "Slow-motion. Tap the right target fast. Hold to steady aim.", {"clean": true})
 		_: _placeholder(cfg, "Unknown scene type.", {})
 

@@ -1,12 +1,8 @@
 extends CanvasLayer
 
-## Read Scene - Evidence connection and theory crafting.
-## Refactored for Godot 4 drag and drop best practices (no dynamic gdscript).
-
 @onready var bg = $Background
 @onready var vbox = $VBox
-@onready var slot1 = $VBox/SentenceContainer/Slot1
-@onready var slot2 = $VBox/SentenceContainer/Slot2
+@onready var sentence_container = $VBox/SentenceContainer
 @onready var card_container = $VBox/CardContainer
 @onready var submit_button = $SubmitButton
 
@@ -15,9 +11,9 @@ var _on_done: Callable
 var _active: bool = false
 var _evidence_catalog: Dictionary = {}
 
-var _filled_slots: Dictionary = { 1: null, 2: null }
-var _solution_1: String = ""
-var _solution_2: String = ""
+var _slots: Array[Control] = []
+var _blanks: int = 0
+var _solution_answers: Array = []
 
 func _ready() -> void:
 	submit_button.pressed.connect(_on_submit)
@@ -26,35 +22,57 @@ func _ready() -> void:
 	var file = FileAccess.open("res://data/evidence.json", FileAccess.READ)
 	if file:
 		var json = JSON.parse_string(file.get_as_text())
-		if json and typeof(json) == TYPE_DICTIONARY and json.has("evidence"):
-			for ev in json["evidence"]:
-				_evidence_catalog[ev["id"]] = ev
+		if json and typeof(json) == TYPE_DICTIONARY:
+			_evidence_catalog = json
 
 func present(cfg: Dictionary, on_done: Callable) -> void:
 	_cfg = cfg
 	_on_done = on_done
 	
-	var ev_ids = cfg.get("evidence", [])
-	if ev_ids.is_empty():
-		ev_ids = ["tire_marks", "blood_trail", "burner_phone", "shipping_manifest"]
-		
-	_solution_1 = cfg.get("solution_1", "shipping_manifest")
-	_solution_2 = cfg.get("solution_2", "tire_marks")
+	var sentence_text = String(cfg.get("sentence", "The suspect is heading to ___ by using ___"))
+	_solution_answers = cfg.get("answers", [])
 	
-	for id in ev_ids:
+	var parts = sentence_text.split("___")
+	_blanks = parts.size() - 1
+	
+	for i in range(parts.size()):
+		if parts[i] != "":
+			var l = Label.new()
+			l.text = parts[i]
+			l.add_theme_font_size_override("font_size", 32)
+			sentence_container.add_child(l)
+			
+		if i < _blanks:
+			var slot = preload("res://scenes/read/evidence_slot.gd").new()
+			slot.custom_minimum_size = Vector2(250, 80)
+			slot.set_meta("slot_index", i)
+			
+			var l = Label.new()
+			l.name = "Label"
+			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			slot.add_child(l)
+			slot.set_empty_visuals()
+			
+			slot.set_drag_forwarding(Callable(), _can_drop_on_slot, _drop_on_slot.bind(slot))
+			slot.connect("slot_cleared", Callable(self, "_on_slot_cleared"))
+			sentence_container.add_child(slot)
+			_slots.append(slot)
+	
+	var extra_ids = cfg.get("extra", [])
+	var pool_ids = []
+	for ev_dict in GameState.evidence:
+		pool_ids.append(ev_dict["id"])
+	for extra_id in extra_ids:
+		if not extra_id in pool_ids:
+			pool_ids.append(extra_id)
+			
+	for id in pool_ids:
 		_spawn_card(id)
-		
-	# Setup drop zones via forwarding
-	slot1.set_meta("slot_index", 1)
-	slot2.set_meta("slot_index", 2)
-	
-	slot1.set_drag_forwarding(Callable(), _can_drop_on_slot, _drop_on_slot.bind(slot1))
-	slot2.set_drag_forwarding(Callable(), _can_drop_on_slot, _drop_on_slot.bind(slot2))
 	
 	_active = true
 
 func _spawn_card(id: String) -> void:
-	var c = PanelContainer.new()
+	var c = preload("res://scenes/read/evidence_card.gd").new()
 	c.custom_minimum_size = Vector2(200, 250)
 	c.set_meta("evidence_id", id)
 	
@@ -62,7 +80,7 @@ func _spawn_card(id: String) -> void:
 	c.add_child(cvbox)
 	
 	var name_label = Label.new()
-	var ev_data = _evidence_catalog.get(id, {"name": id, "description": "Unknown evidence"})
+	var ev_data = _evidence_catalog.get(id, {"name": id, "description": ""})
 	name_label.text = ev_data.get("name", id)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.add_theme_color_override("font_color", Color("45D6C6"))
@@ -74,60 +92,68 @@ func _spawn_card(id: String) -> void:
 	desc_label.custom_minimum_size = Vector2(180, 0)
 	cvbox.add_child(desc_label)
 	
-	# Godot 4 set_drag_forwarding allows passing the Control source
-	c.set_drag_forwarding(_get_drag_data_card.bind(c), Callable(), Callable())
+	c.set_drag_forwarding(c._get_drag_data, Callable(), Callable())
 	card_container.add_child(c)
 
-# Drag forwarding for cards
-func _get_drag_data_card(at_position: Vector2, source_card: Control) -> Variant:
-	source_card.modulate.a = 0.5
-	var preview = Label.new()
-	preview.text = source_card.get_meta("evidence_id")
-	source_card.set_drag_preview(preview)
-	
-	# Hook up a one-shot signal or check to restore alpha if drop fails
-	# A simple approach for UI drops is to always restore on drag end via GUI input, but we'll keep it simple
-	return {"source": source_card, "id": source_card.get_meta("evidence_id")}
-
-# Drag forwarding for slots
 func _can_drop_on_slot(at_position: Vector2, data: Variant) -> bool:
 	return typeof(data) == TYPE_DICTIONARY and data.has("id")
 
 func _drop_on_slot(at_position: Vector2, data: Variant, slot: Control) -> void:
-	var slot_index = slot.get_meta("slot_index")
 	var card_id = data["id"]
-	_filled_slots[slot_index] = card_id
-	
 	var name = card_id
 	var ev_data = _evidence_catalog.get(card_id)
 	if ev_data: name = ev_data.get("name", card_id)
 		
-	slot.get_node("Label").text = name
-	slot.get_node("Label").add_theme_color_override("font_color", Color("F2C14E"))
+	if slot._filled_id != "":
+		_on_slot_cleared(slot.get_meta("slot_index"), slot._filled_id)
+		
+	slot._filled_id = card_id
+	slot.set_filled_visuals(name)
 	
-	# Consume the original card so it can't be reused
 	if data.has("source") and is_instance_valid(data["source"]):
-		data["source"].queue_free()
+		data["source"].hide()
 	
 	_check_completion()
 
+func _on_slot_cleared(slot_index: int, card_id: String) -> void:
+	var slot = _slots[slot_index]
+	slot._filled_id = ""
+	slot.set_empty_visuals()
+	
+	for c in card_container.get_children():
+		if c.get_meta("evidence_id") == card_id:
+			c.show()
+			break
+			
+	_check_completion()
+
 func _check_completion() -> void:
-	if _filled_slots[1] != null and _filled_slots[2] != null:
-		submit_button.disabled = false
-	else:
-		submit_button.disabled = true
+	var complete = true
+	for slot in _slots:
+		if slot._filled_id == "":
+			complete = false
+	submit_button.disabled = not complete
 
 func _on_submit() -> void:
 	if not _active: return
 	_active = false
 	
 	var grade = "cold"
-	var c1 = _filled_slots[1]
-	var c2 = _filled_slots[2]
+	var correct_count = 0
 	
-	if c1 == _solution_1 and c2 == _solution_2:
+	for i in range(_blanks):
+		var slot_ans = _slots[i]._filled_id
+		var truth = _solution_answers[i] if i < _solution_answers.size() else ""
+		if typeof(truth) == TYPE_ARRAY:
+			if slot_ans in truth:
+				correct_count += 1
+		else:
+			if slot_ans == truth:
+				correct_count += 1
+				
+	if correct_count == _blanks:
 		grade = "solid"
-	elif c1 == _solution_1 or c2 == _solution_2:
+	elif correct_count > 0:
 		grade = "shaky"
 		
 	if AudioDirector.has_method("play_sfx"):
@@ -135,7 +161,6 @@ func _on_submit() -> void:
 		else: AudioDirector.call("play_sfx", "failure")
 		
 	var tween = create_tween()
-	# Fix: Tween Modulate on the ColorRect and VBox, not CanvasLayer
 	tween.tween_property(bg, "modulate:a", 0.0, 0.5)
 	tween.tween_property(vbox, "modulate:a", 0.0, 0.5)
 	tween.tween_callback(func():
