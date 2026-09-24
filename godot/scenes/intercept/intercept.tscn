@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6s7f4a5b6c7"]
+
+[ext_resource type="Script" path="res://scenes/intercept/intercept.gd" id="1_a2b3c"]
+
+[node name="Intercept" type="CanvasLayer"]
+script = ExtResource("1_a2b3c")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RoutesContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="BlocksContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ConfirmButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Confirm"

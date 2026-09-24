@@ -178,8 +178,22 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 				self.visible = true
 				_finish(result)
 			)
-		"intercept": _placeholder(cfg, "Predict the route, drag roadblocks onto the map. From Case 8 the weights lean away from your Mirror habits.", {"cut": true})
-		"pursuit": _placeholder(cfg, "Lane driving. Swipe to switch lanes / drift, tap to ram, hold for the squad ability. Optional tilt-to-steer (pitch to Alex first).", {"stars": 2})
+		"intercept":
+			var intercept_scene = preload("res://scenes/intercept/intercept.tscn").instantiate()
+			get_tree().root.add_child(intercept_scene)
+			self.visible = false
+			intercept_scene.present(cfg, func(result):
+				self.visible = true
+				_finish(result)
+			)
+		"pursuit":
+			var pur_scene = preload("res://scenes/pursuit/pursuit.tscn").instantiate()
+			get_tree().root.add_child(pur_scene)
+			self.visible = false
+			pur_scene.present(cfg, func(result):
+				self.visible = true
+				_finish(result)
+			)
 		"foot_chase":
 			var fc_scene = preload("res://scenes/foot_chase/foot_chase.tscn").instantiate()
 			get_tree().root.add_child(fc_scene)
@@ -188,7 +202,14 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 				self.visible = true
 				_finish(result)
 			)
-		"standoff": _placeholder(cfg, "Slow-motion. Tap the right target fast. Hold to steady aim.", {"clean": true})
+		"standoff":
+			var st_scene = preload("res://scenes/standoff/standoff.tscn").instantiate()
+			get_tree().root.add_child(st_scene)
+			self.visible = false
+			st_scene.present(cfg, func(result):
+				self.visible = true
+				_finish(result)
+			)
 		_: _placeholder(cfg, "Unknown scene type.", {})
 
 # ---------------------------------------------------------------- narrative

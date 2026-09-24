@@ -230,7 +230,7 @@ drag-cards Read graded Solid/Shaky/Cold. Breach records smash-vs-precise.
 (pursuit still stub)→choice→debrief, and the Read grade actually changes where
 the next chase starts.
 
-**Phase 3 — `pursuit` + `intercept` + `standoff`.** Lane driving with ram/
+~~**Phase 3 — `pursuit` + `intercept` + `standoff`.**~~ [DONE] Lane driving with ram/
 nitro (two-thumb), the drag-roadblock route map (records block kind), the
 slow-mo tap-target standoff. Now **all of Case 1** is real 3D.
 *Done when:* Case 1 is fully playable with no placeholder cards.

@@ -1,0 +1,86 @@
+[gd_scene load_steps=9 format=3 uid="uid://pursuit1234"]
+
+[ext_resource type="Script" path="res://scenes/pursuit/pursuit.gd" id="1_pu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.15, 0.15, 0.15, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+material = SubResource("StandardMaterial3D_ground")
+size = Vector2(20, 120)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_player"]
+albedo_color = Color(0.1, 0.3, 0.8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_player"]
+material = SubResource("StandardMaterial3D_player")
+size = Vector3(1.5, 1.0, 3.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_suspect"]
+albedo_color = Color(0.8, 0.1, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_suspect"]
+material = SubResource("StandardMaterial3D_suspect")
+size = Vector3(1.5, 1.0, 3.0)
+
+[node name="PursuitScene" type="Node3D"]
+script = ExtResource("1_pu")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.939692, 0.34202, 0, -0.34202, 0.939692, 0, 4, 7)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 20, 0)
+shadow_enabled = true
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+mesh = SubResource("PlaneMesh_ground")
+
+[node name="Player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("BoxMesh_player")
+
+[node name="Suspect" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -15)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Suspect"]
+mesh = SubResource("BoxMesh_suspect")
+
+[node name="ObstacleContainer" type="Node3D" parent="."]
+
+[node name="SceneryContainer" type="Node3D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 20
+
+[node name="HintLabel" type="Label" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -80.0
+offset_right = 200.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 18
+text = "Swipe L/R: Switch Lanes. Tap: Ram. Hold: Nitro."
+horizontal_alignment = 1
+
+[node name="HealthLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "Suspect: 100%"
+horizontal_alignment = 1
