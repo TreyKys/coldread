@@ -42,6 +42,11 @@ func _reset() -> void:
 
 func _selftest() -> void:
 	var ok := true
+	# Start from a clean slate so the test is hermetic and idempotent: boot ran
+	# GameState.load_game(), which may have restored Mirror/flags from a prior
+	# run's save file. Without this, the Mirror round-trip below inherits stale
+	# state and fails (and re-persists it, compounding each run).
+	GameState.reset_progress()
 	var cases := CaseLoader.load_cases()
 	print("[selftest] cases loaded: ", cases.size())
 	if cases.size() != 3:

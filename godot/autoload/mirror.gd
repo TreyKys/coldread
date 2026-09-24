@@ -74,12 +74,14 @@ func to_dict() -> Dictionary:
 	}
 
 func from_dict(d: Dictionary) -> void:
-	roadblocks = d.get("roadblocks", roadblocks)
+	# Copy the nested dicts — assigning them by reference would alias the caller's
+	# source (e.g. the parsed save JSON), so later record_* calls would mutate it.
+	roadblocks = (d.get("roadblocks", roadblocks) as Dictionary).duplicate()
 	smashed = int(d.get("smashed", 0))
 	precise = int(d.get("precise", 0))
 	hesitate = int(d.get("hesitate", 0))
-	swipe = d.get("swipe", swipe)
-	abilities = d.get("abilities", {})
+	swipe = (d.get("swipe", swipe) as Dictionary).duplicate()
+	abilities = (d.get("abilities", {}) as Dictionary).duplicate()
 
 func reset() -> void:
 	roadblocks = {"bridge": 0, "back": 0, "highway": 0, "docks": 0}
