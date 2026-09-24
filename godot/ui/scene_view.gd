@@ -162,8 +162,24 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 		"cold_open": _play_lines(cfg.get("lines", []), 0)
 		"choice": _play_choice(cfg)
 		"debrief": _play_debrief(cfg)
-		"breach": _placeholder(cfg, "Smash-search under a timer. Two-finger drag to sweep, hold to focus a container, tap the revealed item to bag it.", {"evidence": cfg.get("evidence", [])})
-		"read": _placeholder(cfg, "Drag evidence cards into the sentence blanks. Graded Solid / Shaky / Cold.", {"grade": "solid"})
+			"breach":
+			var breach_scene = load("res://scenes/breach/breach.tscn").instantiate()
+			get_tree().root.add_child(breach_scene)
+			self.visible = false
+			breach_scene.present(cfg, func(result):
+				breach_scene.queue_free()
+				self.visible = true
+				_finish(result)
+			)
+				"read":
+			var read_scene = load("res://scenes/read/read.tscn").instantiate()
+			get_tree().root.add_child(read_scene)
+			self.visible = false
+			read_scene.present(cfg, func(result):
+				read_scene.queue_free()
+				self.visible = true
+				_finish(result)
+			)
 		"intercept": _placeholder(cfg, "Predict the route, drag roadblocks onto the map. From Case 8 the weights lean away from your Mirror habits.", {"cut": true})
 		"pursuit": _placeholder(cfg, "Lane driving. Swipe to switch lanes / drift, tap to ram, hold for the squad ability. Optional tilt-to-steer (pitch to Alex first).", {"stars": 2})
 		"foot_chase": _placeholder(cfg, "Behind-the-shoulder runner. Swipe left/right to weave, up to vault, down to slide.", {"stars": 2})
