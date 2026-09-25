@@ -52,17 +52,19 @@ func _selftest() -> void:
 		if n == 0:
 			push_error("[selftest] case has no scenes"); ok = false
 
-	# drive Case 1 through the runner with an auto-presenter
+	# drive all cases through the runner with an auto-presenter
 	var auto := AutoPresenter.new()
 	runner.setup(auto)
-	var finished := [false]
-	runner.case_finished.connect(func(_i): finished[0] = true)
-	runner.start_case(0)
-	if not finished[0]:
-		push_error("[selftest] case 1 did not finish"); ok = false
-	print("[selftest] case 1 scenes played: ", auto.count)
-	print("[selftest] flags after case 1: ", GameState.flags)
-	print("[selftest] trust after case 1: ", GameState.trust)
+	
+	for i in range(cases.size()):
+		var finished := [false]
+		var conn = func(_idx): finished[0] = true
+		runner.case_finished.connect(conn)
+		runner.start_case(i)
+		if not finished[0]:
+			push_error("[selftest] case %d did not finish" % (i + 1)); ok = false
+		runner.case_finished.disconnect(conn)
+		print("[selftest] case %d finished. Flags: %s" % [(i + 1), GameState.flags])
 
 	# Mirror round-trip
 	Mirror.record_block("bridge"); Mirror.record_search(true); Mirror.record_swipe("right")

@@ -26,6 +26,9 @@ var stun_time = 0.0
 var low_mesh: BoxMesh
 var high_mesh: BoxMesh
 var scenery_mesh: BoxMesh
+var low_mat: StandardMaterial3D
+var high_mat: StandardMaterial3D
+var sc_mat: StandardMaterial3D
 
 var obstacle_pool: Array[Node3D] = []
 var scenery_pool: Array[Node3D] = []
@@ -54,20 +57,17 @@ func _ready():
 func _init_resources():
 	low_mesh = BoxMesh.new()
 	low_mesh.size = Vector3(2.0, 0.8, 1.0)
-	var low_mat = StandardMaterial3D.new()
-	low_mat.albedo_color = Color.html("#8B4513") # orange-brown
+	low_mat = StandardMaterial3D.new()
 	low_mesh.material = low_mat
 	
 	high_mesh = BoxMesh.new()
 	high_mesh.size = Vector3(2.0, 0.2, 1.0)
-	var high_mat = StandardMaterial3D.new()
-	high_mat.albedo_color = Color.YELLOW
+	high_mat = StandardMaterial3D.new()
 	high_mesh.material = high_mat
 	
 	scenery_mesh = BoxMesh.new()
 	scenery_mesh.size = Vector3(2.0, 5.0, 2.0)
-	var sc_mat = StandardMaterial3D.new()
-	sc_mat.albedo_color = Color.DIM_GRAY
+	sc_mat = StandardMaterial3D.new()
 	scenery_mesh.material = sc_mat
 
 func _init_pools():

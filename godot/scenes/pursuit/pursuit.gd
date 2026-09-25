@@ -36,6 +36,8 @@ var _is_holding: bool = false
 
 var civilian_mesh: BoxMesh
 var scenery_mesh: BoxMesh
+var civ_mat: StandardMaterial3D
+var sc_mat: StandardMaterial3D
 var obstacle_pool: Array[Node3D] = []
 var scenery_pool: Array[Node3D] = []
 
@@ -58,14 +60,12 @@ func _ready():
 func _init_resources():
 	civilian_mesh = BoxMesh.new()
 	civilian_mesh.size = Vector3(1.5, 1.0, 3.0)
-	var civ_mat = StandardMaterial3D.new()
-	civ_mat.albedo_color = Color.html("#555555")
+	civ_mat = StandardMaterial3D.new()
 	civilian_mesh.material = civ_mat
 	
 	scenery_mesh = BoxMesh.new()
 	scenery_mesh.size = Vector3(2.0, 6.0, 2.0)
-	var sc_mat = StandardMaterial3D.new()
-	sc_mat.albedo_color = Color.DIM_GRAY
+	sc_mat = StandardMaterial3D.new()
 	scenery_mesh.material = sc_mat
 
 func _init_pools():

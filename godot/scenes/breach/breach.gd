@@ -54,6 +54,22 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 	_cfg = cfg
 	_on_done = on_done
 	
+	var district_id = cfg.get("district", "market_mile")
+	var d = GameTheme.get_district(district_id)
+	var env_node = get_node_or_null("WorldEnvironment")
+	if env_node:
+		GameTheme.apply_environment(env_node.environment, ambient_light, district_id)
+	
+	var env_walls = get_node_or_null("Environment")
+	if env_walls:
+		var f_mat = StandardMaterial3D.new()
+		f_mat.albedo_color = d["floor_color"]
+		env_walls.get_node("Floor").set_surface_override_material(0, f_mat)
+		var w_mat = StandardMaterial3D.new()
+		w_mat.albedo_color = d["wall_color"]
+		env_walls.get_node("Wall1").set_surface_override_material(0, w_mat)
+		env_walls.get_node("Wall2").set_surface_override_material(0, w_mat)
+	
 	_target_evidence = cfg.get("evidence", [])
 	_target_decoys = cfg.get("decoys", [])
 	_trace_charges = 1 if cfg.get("trace", true) else 0
@@ -146,12 +162,13 @@ func _spawn_prop(pos: Vector3, type: int, content: Dictionary) -> void:
 	var hp = 1
 	var col_shape = BoxShape3D.new()
 	
+	var d = GameTheme.get_district(_cfg.get("district", "market_mile"))
 	if type == TYPE_LIGHT:
 		hp = 1
 		var b = BoxMesh.new()
 		b.size = Vector3(1, 1, 1)
 		mesh_inst.mesh = b
-		mat.albedo_color = Color(0.6, 0.5, 0.4) # Cardboard brown
+		mat.albedo_color = d["low_obs"]
 		col_shape.size = Vector3(1.5, 1.5, 1.5)
 		pos.y = 0.5
 	elif type == TYPE_MEDIUM:
@@ -159,7 +176,7 @@ func _spawn_prop(pos: Vector3, type: int, content: Dictionary) -> void:
 		var b = BoxMesh.new()
 		b.size = Vector3(1.5, 1.2, 1.0)
 		mesh_inst.mesh = b
-		mat.albedo_color = Color(0.3, 0.4, 0.5) # Steel desk
+		mat.albedo_color = d["scenery"]
 		col_shape.size = Vector3(2.0, 1.8, 1.5)
 		pos.y = 0.6
 	elif type == TYPE_HEAVY:
@@ -167,7 +184,7 @@ func _spawn_prop(pos: Vector3, type: int, content: Dictionary) -> void:
 		var b = BoxMesh.new()
 		b.size = Vector3(1.2, 2.0, 1.2)
 		mesh_inst.mesh = b
-		mat.albedo_color = Color(0.2, 0.2, 0.2) # Dark safe/server
+		mat.albedo_color = d["wall_color"].darkened(0.2)
 		col_shape.size = Vector3(1.8, 2.5, 1.8)
 		pos.y = 1.0
 		

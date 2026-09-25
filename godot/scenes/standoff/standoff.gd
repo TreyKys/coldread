@@ -25,6 +25,19 @@ const COL_WRONG_FLASH = Color(0.8, 0.1, 0.1)
 func present(cfg: Dictionary, on_done: Callable) -> void:
 	_cfg = cfg
 	_on_done = on_done
+	
+	var district_id = cfg.get("district", "market_mile")
+	var d = GameTheme.get_district(district_id)
+	var env_node = get_node_or_null("WorldEnvironment")
+	if env_node:
+		GameTheme.apply_environment(env_node.environment, get_node_or_null("DirectionalLight3D"), district_id)
+	
+	var floor_node = get_node_or_null("Floor")
+	if floor_node:
+		var f_mat = StandardMaterial3D.new()
+		f_mat.albedo_color = d["floor_color"]
+		floor_node.set_surface_override_material(0, f_mat)
+	
 	_time_left = float(cfg.get("time_s", 5.0))
 	_targets_data = cfg.get("targets", [])
 	
