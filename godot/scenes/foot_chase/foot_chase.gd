@@ -113,6 +113,12 @@ func _process(delta: float) -> void:
 	_distance -= current_speed * delta * 0.2 # 100m takes ~33s if no stun
 	if _distance < 0:
 		_distance = 0
+		
+	var max_hits = _cfg.get("maxHits", 99)
+	var can_fail = _cfg.get("canFail", false)
+	if can_fail and hits >= max_hits:
+		_finish_scene(0)
+		return
 	
 	# Move player
 	player.position.x = lerp(player.position.x, target_x, delta * 10.0)
@@ -285,7 +291,7 @@ func _unhandled_input(event: InputEvent) -> void:
 								state_timer = 0.8
 			_is_dragging = false
 
-func _finish_scene() -> void:
+func _finish_scene(forced_stars: int = -1) -> void:
 	if not _active: return
 	_active = false
 	
@@ -295,11 +301,14 @@ func _finish_scene() -> void:
 	var t = create_tween()
 	t.tween_property(camera, "position:z", camera.position.z - 2.0, 0.5)
 	
-	await get_tree().create_timer(0.6).timeout
-		
-	if _on_done.is_valid():
-		var stars = 3
+	var stars = 3
+	if forced_stars != -1:
+		stars = forced_stars
+	else:
 		if hits >= 2: stars = 2
 		if hits >= 4: stars = 1
+	
+	await get_tree().create_timer(0.6).timeout
+	if _on_done.is_valid():
 		_on_done.call({"stars": stars})
 	queue_free()

@@ -18,6 +18,7 @@ Mirror="*res://autoload/mirror.gd"
 GameState="*res://autoload/game_state.gd"
 AudioDirector="*res://autoload/audio.gd"
 GameTheme="*res://autoload/theme.gd"
+Transition="*res://autoload/transition.gd"
 
 [display]
 

@@ -163,52 +163,76 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 		"choice": _play_choice(cfg)
 		"debrief": _play_debrief(cfg)
 		"breach":
-			var breach_scene = preload("res://scenes/breach/breach.tscn").instantiate()
-			get_tree().root.add_child(breach_scene)
-			self.visible = false
-			breach_scene.present(cfg, func(result):
-				self.visible = true
-				_finish(result)
+			Transition.play_transition(0.3, func():
+				var breach_scene = preload("res://scenes/breach/breach.tscn").instantiate()
+				get_tree().root.add_child(breach_scene)
+				self.visible = false
+				breach_scene.present(cfg, func(result):
+					Transition.play_transition(0.3, func():
+						self.visible = true
+						_finish(result)
+					)
+				)
 			)
 		"read":
-			var read_scene = preload("res://scenes/read/read.tscn").instantiate()
-			get_tree().root.add_child(read_scene)
-			self.visible = false
-			read_scene.present(cfg, func(result):
-				self.visible = true
-				_finish(result)
+			Transition.play_transition(0.3, func():
+				var read_scene = preload("res://scenes/read/read.tscn").instantiate()
+				get_tree().root.add_child(read_scene)
+				self.visible = false
+				read_scene.present(cfg, func(result):
+					Transition.play_transition(0.3, func():
+						self.visible = true
+						_finish(result)
+					)
+				)
 			)
 		"intercept":
-			var intercept_scene = preload("res://scenes/intercept/intercept.tscn").instantiate()
-			get_tree().root.add_child(intercept_scene)
-			self.visible = false
-			intercept_scene.present(cfg, func(result):
-				self.visible = true
-				_finish(result)
+			Transition.play_transition(0.3, func():
+				var intercept_scene = preload("res://scenes/intercept/intercept.tscn").instantiate()
+				get_tree().root.add_child(intercept_scene)
+				self.visible = false
+				intercept_scene.present(cfg, func(result):
+					Transition.play_transition(0.3, func():
+						self.visible = true
+						_finish(result)
+					)
+				)
 			)
 		"pursuit":
-			var pur_scene = preload("res://scenes/pursuit/pursuit.tscn").instantiate()
-			get_tree().root.add_child(pur_scene)
-			self.visible = false
-			pur_scene.present(cfg, func(result):
-				self.visible = true
-				_finish(result)
+			Transition.play_transition(0.3, func():
+				var pur_scene = preload("res://scenes/pursuit/pursuit.tscn").instantiate()
+				get_tree().root.add_child(pur_scene)
+				self.visible = false
+				pur_scene.present(cfg, func(result):
+					Transition.play_transition(0.3, func():
+						self.visible = true
+						_finish(result)
+					)
+				)
 			)
 		"foot_chase":
-			var fc_scene = preload("res://scenes/foot_chase/foot_chase.tscn").instantiate()
-			get_tree().root.add_child(fc_scene)
-			self.visible = false
-			fc_scene.present(cfg, func(result):
-				self.visible = true
-				_finish(result)
+			Transition.play_transition(0.3, func():
+				var fc_scene = preload("res://scenes/foot_chase/foot_chase.tscn").instantiate()
+				get_tree().root.add_child(fc_scene)
+				self.visible = false
+				fc_scene.present(cfg, func(result):
+					Transition.play_transition(0.3, func():
+						self.visible = true
+						_finish(result)
+					)
+				)
 			)
 		"standoff":
-			var st_scene = preload("res://scenes/standoff/standoff.tscn").instantiate()
-			get_tree().root.add_child(st_scene)
-			self.visible = false
-			st_scene.present(cfg, func(result):
-				self.visible = true
-				_finish(result)
+			Transition.play_transition(0.3, func():
+				var st_scene = preload("res://scenes/standoff/standoff.tscn").instantiate()
+				get_tree().root.add_child(st_scene)
+				self.visible = false
+				st_scene.present(cfg, func(result):
+					Transition.play_transition(0.3, func():
+						self.visible = true
+						_finish(result)
+					)
+				)
 			)
 		_: _placeholder(cfg, "Unknown scene type.", {})
 
