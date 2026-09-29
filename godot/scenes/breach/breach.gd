@@ -23,6 +23,7 @@ var _target_evidence: Array = []
 var _target_decoys: Array = []
 var _trace_charges: int = 1
 var _trace_active: bool = false
+var _radio_played = false
 
 var _props: Array = [] # List of prop dictionaries
 var _camera_shake: float = 0.0
@@ -51,6 +52,7 @@ func _exit_tree() -> void:
 	Engine.time_scale = 1.0
 
 func present(cfg: Dictionary, on_done: Callable) -> void:
+	_radio_played = false
 	_cfg = cfg
 	_on_done = on_done
 	
@@ -248,6 +250,10 @@ func _update_ui() -> void:
 	var s = int(_time_left) % 60
 	timer_label.text = "%02d:%02d" % [m, s]
 	progress_label.text = "%d / %d FOUND" % [_found_evidence.size(), _target_evidence.size()]
+	
+	if _time_left < 10.0 and not _radio_played:
+		_radio_played = true
+		Radio.play("[RADIO] Wrap it up, patrol cars are en route!", "ife")
 	
 	if _time_left < 10.0:
 		timer_label.add_theme_color_override("font_color", Color(1, 0.2, 0.2))

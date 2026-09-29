@@ -11,6 +11,7 @@ var _cfg: Dictionary
 var _on_done: Callable
 var _active: bool = false
 var _distance: float = 100.0
+var _radio_played = false
 
 var _touch_start: Vector2
 var _is_dragging: bool = false
@@ -94,6 +95,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 	_on_done = on_done
 	_distance = 100.0
 	_active = true
+	_radio_played = false
 	hits = 0
 	stun_time = 0.0
 	current_lane_index = 1
@@ -148,6 +150,10 @@ func _process(delta: float) -> void:
 	else:
 		camera.position.y = lerp(camera.position.y, camera_base_pos.y, delta * 5.0)
 		
+	if _distance < 50.0 and not _radio_played:
+		_radio_played = true
+		Radio.play("[RADIO] He's losing stamina, push!", "dash")
+	
 	if _distance <= 0:
 		_finish_scene()
 		return

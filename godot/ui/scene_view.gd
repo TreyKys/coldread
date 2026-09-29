@@ -23,6 +23,7 @@ const COL_GOLD := Color("F2C14E")
 
 var _faces := {}
 var _bg: ColorRect
+var _3d_bg: Node3D
 var _scroll: ScrollContainer
 var _box: VBoxContainer
 var _on_done: Callable
@@ -39,7 +40,7 @@ func _ready() -> void:
 	if f != null:
 		_faces = f
 	_bg = ColorRect.new()
-	_bg.color = COL_BG
+	_bg.color = Color(COL_BG, 0.7)
 	_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_bg)
 	_scroll = ScrollContainer.new()
@@ -166,6 +167,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 			Transition.play_transition(0.3, func():
 				var breach_scene = preload("res://scenes/breach/breach.tscn").instantiate()
 				get_tree().root.add_child(breach_scene)
+				if is_instance_valid(_3d_bg): _3d_bg.queue_free()
 				self.visible = false
 				breach_scene.present(cfg, func(result):
 					Transition.play_transition(0.3, func():
@@ -178,6 +180,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 			Transition.play_transition(0.3, func():
 				var read_scene = preload("res://scenes/read/read.tscn").instantiate()
 				get_tree().root.add_child(read_scene)
+				if is_instance_valid(_3d_bg): _3d_bg.queue_free()
 				self.visible = false
 				read_scene.present(cfg, func(result):
 					Transition.play_transition(0.3, func():
@@ -190,6 +193,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 			Transition.play_transition(0.3, func():
 				var intercept_scene = preload("res://scenes/intercept/intercept.tscn").instantiate()
 				get_tree().root.add_child(intercept_scene)
+				if is_instance_valid(_3d_bg): _3d_bg.queue_free()
 				self.visible = false
 				intercept_scene.present(cfg, func(result):
 					Transition.play_transition(0.3, func():
@@ -202,6 +206,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 			Transition.play_transition(0.3, func():
 				var pur_scene = preload("res://scenes/pursuit/pursuit.tscn").instantiate()
 				get_tree().root.add_child(pur_scene)
+				if is_instance_valid(_3d_bg): _3d_bg.queue_free()
 				self.visible = false
 				pur_scene.present(cfg, func(result):
 					Transition.play_transition(0.3, func():
@@ -214,6 +219,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 			Transition.play_transition(0.3, func():
 				var fc_scene = preload("res://scenes/foot_chase/foot_chase.tscn").instantiate()
 				get_tree().root.add_child(fc_scene)
+				if is_instance_valid(_3d_bg): _3d_bg.queue_free()
 				self.visible = false
 				fc_scene.present(cfg, func(result):
 					Transition.play_transition(0.3, func():
@@ -226,6 +232,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 			Transition.play_transition(0.3, func():
 				var st_scene = preload("res://scenes/standoff/standoff.tscn").instantiate()
 				get_tree().root.add_child(st_scene)
+				if is_instance_valid(_3d_bg): _3d_bg.queue_free()
 				self.visible = false
 				st_scene.present(cfg, func(result):
 					Transition.play_transition(0.3, func():

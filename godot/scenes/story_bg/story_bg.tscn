@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://storybg123"]
+
+[ext_resource type="Script" path="res://scenes/story_bg/story_bg.gd" id="1_bg"]
+
+[sub_resource type="Environment" id="Environment_xyz"]
+background_mode = 1
+background_color = Color(0.1, 0.1, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="StoryBg" type="Node3D"]
+script = ExtResource("1_bg")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xyz")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 10, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0, 5, 8)
+
+[node name="Props" type="Node3D" parent="."]

@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=3 uid="uid://radio123abc"]
+
+[ext_resource type="Script" path="res://autoload/radio.gd" id="1_radio"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_radio"]
+bg_color = Color(0.1, 0.1, 0.12, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.27, 0.84, 0.78, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 4
+
+[node name="Radio" type="CanvasLayer"]
+script = ExtResource("1_radio")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 200.0
+offset_top = 20.0
+offset_right = -200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_radio")
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Face" type="TextureRect" parent="MarginContainer/HBox"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="Label" parent="MarginContainer/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "[RADIO] Testing radio communication..."
+autowrap_mode = 2
+vertical_alignment = 1

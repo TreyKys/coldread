@@ -25,6 +25,7 @@ var base_world_speed = 25.0
 var nitro_active = false
 
 var ramming = false
+var _radio_played = false
 var ram_timer = 0.0
 var ram_cooldown = 0.0
 var distance_to_suspect = 15.0 # meters
@@ -93,6 +94,7 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 	_cfg = cfg
 	_on_done = on_done
 	_active = true
+	_radio_played = false
 	suspect_health = 100
 	hits = 0
 	suspect_hits = 0
