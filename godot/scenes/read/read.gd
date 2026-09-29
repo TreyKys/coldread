@@ -55,8 +55,12 @@ func present(cfg: Dictionary, on_done: Callable) -> void:
 	
 	var extra_ids = cfg.get("extra", [])
 	var pool_ids = []
-	for ev_dict in GameState.evidence:
-		pool_ids.append(ev_dict["id"])
+	for ev_id in GameState.evidence:
+		# Ev_id could be a string or dict for backwards compat
+		if typeof(ev_id) == TYPE_STRING:
+			pool_ids.append(ev_id)
+		else:
+			pool_ids.append(ev_id["id"])
 	for extra_id in extra_ids:
 		if not extra_id in pool_ids:
 			pool_ids.append(extra_id)
