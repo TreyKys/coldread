@@ -1,0 +1,33 @@
+[gd_resource type="Environment" load_steps=2 format=3 uid="uid://ultra_env123"]
+[sub_resource type="Sky" id="Sky_ultra"]
+[resource]
+background_mode = 2
+sky = SubResource("Sky_ultra")
+tonemap_mode = 3
+tonemap_exposure = 1.2
+ssr_enabled = true
+ssr_max_steps = 64
+ssr_fade_in = 0.15
+ssr_fade_out = 2.0
+ssao_enabled = true
+ssao_radius = 1.0
+ssao_intensity = 2.0
+ssil_enabled = true
+ssil_radius = 5.0
+ssil_intensity = 1.0
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_bounce_feedback = 0.5
+sdfgi_cascades = 4
+sdfgi_min_cell_size = 0.2
+sdfgi_y_scale = 0
+glow_enabled = true
+glow_levels/1 = 1.0
+glow_levels/2 = 1.0
+glow_levels/4 = 1.0
+glow_levels/6 = 1.0
+glow_blend_mode = 1
+glow_hdr_threshold = 1.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.02
+volumetric_fog_albedo = Color(0.2, 0.25, 0.3, 1)
