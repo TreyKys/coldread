@@ -24,17 +24,15 @@ func _init():
     env.environment = env_res
     root.add_child(env)
     
-    # 2. Sun
     var sun = DirectionalLight3D.new()
     sun.shadow_enabled = true
     sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
     sun.transform.basis = Basis().rotated(Vector3(1, 0, 0), deg_to_rad(-45)).rotated(Vector3(0, 1, 0), deg_to_rad(45))
     root.add_child(sun)
     
-    # 3. Procedural Asphalt Material
     var wet_mat = StandardMaterial3D.new()
     wet_mat.albedo_color = Color(0.12, 0.12, 0.14)
-    wet_mat.roughness = 0.15 # Shiny for SSR
+    wet_mat.roughness = 0.15
     wet_mat.metallic = 0.2
     
     var building_mat = StandardMaterial3D.new()
@@ -104,7 +102,20 @@ func _init():
             sign.material_override = neon_mat
             market.add_child(sign)
 
+    # --- ADD SQUAD CAR ---
+    var car = preload("res://scenes/player/squad_car.tscn").instantiate()
+    car.name = "SquadCar"
+    car.position = Vector3(0, 5, -200) # Start on Independence Expressway
+    root.add_child(car)
+
     var packed = PackedScene.new()
+    # Need to set owner for packed scene children to be saved!
+    for child in root.get_children():
+        child.owner = root
+        if child.name == "Mainland" or child.name == "Market_Mile":
+            for grand in child.get_children():
+                grand.owner = root
+    
     packed.pack(root)
     var dir = DirAccess.open("res://")
     if not dir.dir_exists("scenes/world"):

@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/combat/cover_fire.gd" id="1_nxi5a"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kr5hl"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_blp8x"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gkyqo"]
+albedo_color = Color(1, 0, 0, 1)
+
+[node name="CoverFire_Pier3" type="Node3D"]
+script = ExtResource("1_nxi5a")
+max_health = 100
+current_health = 100
+squad_active = "Patch"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Kite_Enemy_0" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1, -20)
+material_override = SubResource("StandardMaterial3D_kr5hl")
+size = Vector3(1, 2, 1)
+
+[node name="Kite_Enemy_1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -20)
+material_override = SubResource("StandardMaterial3D_blp8x")
+size = Vector3(1, 2, 1)
+
+[node name="Kite_Enemy_2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -20)
+material_override = SubResource("StandardMaterial3D_gkyqo")
+size = Vector3(1, 2, 1)
