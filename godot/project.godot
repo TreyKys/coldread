@@ -6,7 +6,7 @@ config_version=5
 
 config/name="COLD READ"
 config/description="Brick-voxel detective / crime game. Act 1 — The Kites."
-run/main_scene="res://main/main.tscn"
+run/main_scene="res://scenes/world/open_world.tscn"
 config/features=PackedStringArray("4.8", "GL Compatibility")
 config/icon="res://icon.svg"
 boot_splash/show_image=false

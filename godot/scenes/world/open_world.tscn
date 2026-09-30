@@ -1,3 +1,550 @@
-[gd_scene format=3]
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/squad_car.tscn" id="1_n41br"]
+[ext_resource type="Script" path="res://scenes/player/squad_car.gd" id="2_bpmhl"]
+
+[sub_resource type="Sky" id="Sky_sf5w7"]
+
+[sub_resource type="Environment" id="Environment_xs78u"]
+background_mode = 2
+sky = SubResource("Sky_sf5w7")
+tonemap_mode = 3
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vsroe"]
+albedo_color = Color(0.12, 0.12, 0.14, 1)
+metallic = 0.2
+roughness = 0.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ar453"]
+albedo_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tarwk"]
+emission_enabled = true
+emission = Color(1, 0.2, 0.8, 1)
+emission_energy_multiplier = 4.0
 
 [node name="LagoonCity_OpenWorld" type="Node3D"]
+
+[node name="@WorldEnvironment@2" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xs78u")
+
+[node name="@DirectionalLight3D@3" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_mode = 0
+
+[node name="Mainland" type="Node3D" parent="."]
+
+[node name="Road_4th_Freedom_Bridge" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 250)
+material_override = SubResource("StandardMaterial3D_vsroe")
+size = Vector3(30, 1, 500)
+
+[node name="Road_Independence_Expressway" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -200)
+material_override = SubResource("StandardMaterial3D_vsroe")
+size = Vector3(40, 1, 400)
+
+[node name="@CSGBox3D@4" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.4493, 38.0332, -157.725)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(17.967, 76.0664, 10.0642)
+
+[node name="@CSGBox3D@5" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95.8662, 13.7461, -351.87)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(28.067, 27.4923, 21.8683)
+
+[node name="@CSGBox3D@6" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -86.8329, 38.0218, -358.278)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(14.9086, 76.0436, 17.0914)
+
+[node name="@CSGBox3D@7" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 92.1846, 11.4335, -195.287)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(15.6785, 22.8669, 24.341)
+
+[node name="@CSGBox3D@8" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.5919, 36.9242, -110.705)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(15.1759, 73.8484, 17.2261)
+
+[node name="@CSGBox3D@9" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.8853, 23.1768, -9.39826)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(22.4298, 46.3535, 13.5239)
+
+[node name="@CSGBox3D@10" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.836, 13.1876, -107.5)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(24.5435, 26.3752, 20.0364)
+
+[node name="@CSGBox3D@11" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.9345, 12.6671, -186.696)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(24.3501, 25.3342, 21.3623)
+
+[node name="@CSGBox3D@12" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72.5761, 23.1828, -30.952)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(17.0249, 46.3657, 18.415)
+
+[node name="@CSGBox3D@13" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.4767, 21.6979, -302.963)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(13.3882, 43.3958, 29.3093)
+
+[node name="@CSGBox3D@14" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.8592, 12.0384, -147.569)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(27.0533, 24.0769, 11.3472)
+
+[node name="@CSGBox3D@15" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.7232, 28.856, -36.6385)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(13.0706, 57.7121, 14.2857)
+
+[node name="@CSGBox3D@16" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -79.6343, 25.7145, -382.199)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(19.0902, 51.4289, 28.4558)
+
+[node name="@CSGBox3D@17" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.0407, 26.1661, -370.478)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(12.0357, 52.3322, 13.0925)
+
+[node name="@CSGBox3D@18" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77.7812, 30.5134, -232.182)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(11.4801, 61.0268, 27.0499)
+
+[node name="@CSGBox3D@19" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.8845, 19.3677, -170.062)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(13.1417, 38.7354, 15.9705)
+
+[node name="@CSGBox3D@20" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -81.6916, 21.0359, -389.519)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(17.9833, 42.0717, 25.8572)
+
+[node name="@CSGBox3D@21" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.3395, 36.7024, -37.3973)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(13.0659, 73.4049, 14.2041)
+
+[node name="@CSGBox3D@22" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.9185, 10.6975, -325.694)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(16.6453, 21.395, 15.8814)
+
+[node name="@CSGBox3D@23" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 86.471, 29.9178, -130.971)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(20.8822, 59.8355, 24.3481)
+
+[node name="@CSGBox3D@24" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -66.4356, 10.6719, -270.09)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(27.5944, 21.3439, 27.3169)
+
+[node name="@CSGBox3D@25" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 57.4705, 25.5189, -162.078)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(11.6457, 51.0378, 27.2472)
+
+[node name="@CSGBox3D@26" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.3703, 14.4628, -197.155)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(27.9339, 28.9256, 18.1741)
+
+[node name="@CSGBox3D@27" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97.4313, 17.9576, -303.973)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(10.3903, 35.9152, 15.6447)
+
+[node name="@CSGBox3D@28" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84.4926, 35.9995, -31.7069)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(20.1949, 71.999, 26.2762)
+
+[node name="@CSGBox3D@29" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75.8751, 10.627, -336.976)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(25.6007, 21.2539, 29.3004)
+
+[node name="@CSGBox3D@30" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.5207, 19.7148, -174.29)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(19.7152, 39.4296, 12.3877)
+
+[node name="@CSGBox3D@31" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.674, 26.2614, -104.99)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(28.7993, 52.5227, 17.2133)
+
+[node name="@CSGBox3D@32" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.4064, 16.6246, -5.90001)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(11.3325, 33.2492, 15.5254)
+
+[node name="@CSGBox3D@33" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94.0266, 27.0711, -252.04)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(12.4604, 54.1421, 22.3923)
+
+[node name="@CSGBox3D@34" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.8278, 21.1769, -126.005)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(16.5856, 42.3539, 25.0444)
+
+[node name="@CSGBox3D@35" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.7263, 17.4615, -60.022)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(17.8111, 34.9229, 10.6065)
+
+[node name="@CSGBox3D@36" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.0044, 21.5834, -34.5856)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(28.8323, 43.1668, 10.7208)
+
+[node name="@CSGBox3D@37" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67.4495, 24.116, -329.566)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(13.9589, 48.232, 23.6846)
+
+[node name="@CSGBox3D@38" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98.7582, 35.3969, -140.4)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(24.8666, 70.7938, 25.0098)
+
+[node name="@CSGBox3D@39" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66.0719, 34.2785, -249.844)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(22.9992, 68.557, 21.8475)
+
+[node name="@CSGBox3D@40" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.6937, 29.3442, -181.933)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(13.7842, 58.6883, 13.1548)
+
+[node name="@CSGBox3D@41" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 87.02, 23.3887, -304.457)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(19.141, 46.7774, 24.8767)
+
+[node name="@CSGBox3D@42" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -81.8142, 11.1615, -99.9758)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(17.6029, 22.323, 22.7453)
+
+[node name="@CSGBox3D@43" type="CSGBox3D" parent="Mainland"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 59.0615, 37.0154, -161.978)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(21.5464, 74.0308, 14.6348)
+
+[node name="Market_Mile" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, 0, -100)
+
+[node name="Road_Weavers_Lane" type="CSGBox3D" parent="Market_Mile"]
+material_override = SubResource("StandardMaterial3D_vsroe")
+size = Vector3(6, 1, 150)
+
+[node name="@CSGBox3D@44" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.52985, 4.86066, 13.9413)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.14314, 9.72131, 7.45005)
+
+[node name="@CSGBox3D@45" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.61535, 5.31278, 26.7786)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.41075, 10.6256, 9.26824)
+
+[node name="@CSGBox3D@46" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.86117, 7.03835, -73.2715)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(9.64004, 14.0767, 6.98638)
+
+[node name="@CSGBox3D@47" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.6767, 3.4469, 68.3094)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.91048, 6.8938, 9.00733)
+
+[node name="@CSGBox3D@48" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2402, 4.47233, -31.9569)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(9.11294, 8.94466, 5.64903)
+
+[node name="@CSGBox3D@49" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.37231, 5.95859, -8.47356)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(6.48735, 11.9172, 8.28696)
+
+[node name="@CSGBox3D@50" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.0219, 3.85658, -0.683407)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.57854, 7.71315, 8.7792)
+
+[node name="@CSGBox3D@51" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.36602, 5.14962, -7.80227)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.06709, 10.2992, 8.71478)
+
+[node name="@CSGBox3D@52" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.366, 3.14962, -7.80227)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@53" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.78216, 5.16025, 62.0214)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.18181, 10.3205, 6.68982)
+
+[node name="@CSGBox3D@54" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.41827, 2.90496, 36.125)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.19443, 5.80993, 7.23188)
+
+[node name="@CSGBox3D@55" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.41827, 0.904964, 36.125)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@56" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.434, 7.41397, -36.8758)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(9.55518, 14.8279, 7.56844)
+
+[node name="@CSGBox3D@57" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.27276, 5.54116, 9.34052)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.34248, 11.0823, 8.20287)
+
+[node name="@CSGBox3D@58" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.63873, 4.97674, -66.7856)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.14737, 9.95348, 7.68978)
+
+[node name="@CSGBox3D@59" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.9101, 2.53325, 39.9344)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.75884, 5.06651, 7.00915)
+
+[node name="@CSGBox3D@60" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9101, 0.533253, 39.9344)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@61" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.98306, 4.94869, 2.0121)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.579, 9.89738, 6.65238)
+
+[node name="@CSGBox3D@62" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.98306, 2.94869, 2.0121)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@63" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.29146, 4.92299, -39.3798)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(6.77313, 9.84598, 9.43431)
+
+[node name="@CSGBox3D@64" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.77742, 4.58902, -63.459)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.32075, 9.17803, 5.27591)
+
+[node name="@CSGBox3D@65" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.65761, 6.58089, 70.8177)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.86314, 13.1618, 8.81254)
+
+[node name="@CSGBox3D@66" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.65761, 4.58089, 70.8177)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@67" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0031, 6.04053, 9.64189)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.97692, 12.0811, 7.49805)
+
+[node name="@CSGBox3D@68" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.0031, 4.04053, 9.64189)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@69" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.22499, 3.48924, 24.7252)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(9.6312, 6.97849, 5.88127)
+
+[node name="@CSGBox3D@70" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.22499, 1.48924, 24.7252)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@71" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.63472, 5.02568, -41.817)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.95026, 10.0514, 7.52542)
+
+[node name="@CSGBox3D@72" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8882, 5.15246, -41.8874)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.55643, 10.3049, 6.24584)
+
+[node name="@CSGBox3D@73" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6963, 2.87884, -23.2756)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(9.87941, 5.75768, 7.73398)
+
+[node name="@CSGBox3D@74" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.6963, 0.878838, -23.2756)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@75" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.0612, 4.0002, 28.7166)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.01663, 8.0004, 9.84907)
+
+[node name="@CSGBox3D@76" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.0612, 2.0002, 28.7166)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@77" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0982, 6.17331, -38.8227)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(6.21269, 12.3466, 8.68797)
+
+[node name="@CSGBox3D@78" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.038, 3.72162, -71.8668)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.32648, 7.44323, 5.45395)
+
+[node name="@CSGBox3D@79" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.038, 1.72162, -71.8668)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@80" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4641, 2.79294, 30.5711)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.1253, 5.58588, 5.32657)
+
+[node name="@CSGBox3D@81" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.4641, 0.792942, 30.5711)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@82" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.6634, 5.76152, 42.6861)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.09762, 11.523, 6.51522)
+
+[node name="@CSGBox3D@83" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2385, 5.13147, -26.1881)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.3485, 10.2629, 7.04445)
+
+[node name="@CSGBox3D@84" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9024, 4.67988, 65.398)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(6.5206, 9.35977, 6.9463)
+
+[node name="@CSGBox3D@85" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.9024, 2.67988, 65.398)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@86" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.61901, 2.80215, -51.9394)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.3982, 5.60429, 8.30681)
+
+[node name="@CSGBox3D@87" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.61901, 0.802146, -51.9394)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@88" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.3543, 5.89323, -17.0642)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.13477, 11.7865, 6.80334)
+
+[node name="@CSGBox3D@89" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.7985, 2.53648, -68.0826)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(6.65519, 5.07297, 9.24686)
+
+[node name="@CSGBox3D@90" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7985, 0.536483, -68.0826)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@91" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.82345, 3.06933, -17.3865)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(8.79812, 6.13865, 9.26861)
+
+[node name="@CSGBox3D@92" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.81159, 4.91501, 59.6968)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(5.28891, 9.83003, 7.7087)
+
+[node name="@CSGBox3D@93" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5268, 7.01718, 21.3465)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.4537, 14.0344, 7.35197)
+
+[node name="@CSGBox3D@94" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.45988, 2.52121, -51.5132)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.53096, 5.04241, 5.75043)
+
+[node name="@CSGBox3D@95" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.45988, 0.521207, -51.5132)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@96" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.18166, 4.85246, -59.1107)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(6.43355, 9.70492, 5.6775)
+
+[node name="@CSGBox3D@97" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.17345, 4.8026, 10.2648)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.84204, 9.6052, 6.72067)
+
+[node name="@CSGBox3D@98" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1734, 2.8026, 10.2648)
+material_override = SubResource("StandardMaterial3D_tarwk")
+size = Vector3(1, 2, 0.2)
+
+[node name="@CSGBox3D@99" type="CSGBox3D" parent="Market_Mile"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.11645, 5.32389, 28.3942)
+material_override = SubResource("StandardMaterial3D_ar453")
+size = Vector3(7.10337, 10.6478, 8.43341)
+
+[node name="SquadCar" type="VehicleBody3D" parent="." instance=ExtResource("1_n41br")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -200)
+mass = 1500.0
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.5, 0)
+script = ExtResource("2_bpmhl")
+max_engine_force = 300.0
+max_steer = 0.4
+braking_force = 15.0
