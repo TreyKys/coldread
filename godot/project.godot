@@ -40,7 +40,7 @@ pointing/emulate_mouse_from_touch=true
 
 ; gl_compatibility runs on cheap 3GB Androids (ROADMAP § Destruction on cheap phones).
 ; Switch to "mobile" (Vulkan) per-device once the art pass lands.
-renderer/rendering_method="forward_plus"
-renderer/rendering_method.mobile="forward_plus"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.039, 0.063, 0.075, 1)
